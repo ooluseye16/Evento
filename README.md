@@ -1,6 +1,6 @@
-# christmascountdown
+# Countdown to Christmas
 
-A new Flutter application.
+A  Flutter application counting down to christmas.
 
 ## Getting Started
 
