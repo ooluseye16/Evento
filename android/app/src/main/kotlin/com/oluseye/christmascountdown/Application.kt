@@ -1,4 +1,4 @@
-package com.oluseye.christmas_countdown
+package com.oluseye.christmascountdown
 
 import io.flutter.app.FlutterApplication
 import io.flutter.plugins.androidalarmmanager.AlarmService
@@ -16,6 +16,4 @@ class Application : FlutterApplication(), io.flutter.plugin.common.PluginRegistr
         AndroidAlarmManagerPlugin.registerWith(
                 registry.registrarFor("io.flutter.plugins.androidalarmmanager.AndroidAlarmManagerPlugin"))
     }
-}
-
 }

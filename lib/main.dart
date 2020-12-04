@@ -1,224 +1,144 @@
-import 'dart:async';
-
+import 'package:android_alarm_manager/android_alarm_manager.dart';
+import 'package:christmascountdown/add_events.dart';
+import 'package:christmascountdown/events.dart';
+import 'package:christmascountdown/fullScreen.dart';
+import 'package:christmascountdown/widgets/countdownCard.dart';
 import 'package:flutter/material.dart';
-import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:timer_builder/timer_builder.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await AndroidAlarmManager.initialize();
+  runApp(ChangeNotifierProvider(create: (_) => EventData(), child: MyApp()));
+}
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      color: Colors.teal,
+      color: Color(0xffF4526A),
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        fontFamily: "Berlin Bold",
-      ),
+      theme: ThemeData(iconTheme: IconThemeData(color: Colors.white)),
       title: "Countdown to Christmas",
-      home: ChristmasCountdown(),
+      home: CountdownSystem(),
     );
   }
 }
 
-class ChristmasCountdown extends StatefulWidget {
-  @override
-  _ChristmasCountdownState createState() => _ChristmasCountdownState();
-}
-
-class _ChristmasCountdownState extends State<ChristmasCountdown> {
-  final christmasDate = DateTime(2020, 12, 25);
-  final todayDate = DateTime.now();
-  Widget display;
-
-  Widget countdown() {
-    int dif = christmasDate.difference(todayDate).inSeconds;
-    Timer.periodic(
-        Duration(
-          seconds: 1,
-        ), (Timer t) {
-      setState(() {
-        if (dif < 1) {
-          t.cancel();
-        } else if (dif < 60) {
-          display = TimerDisplay(
-            seconds: dif.toString(),
-          );
-          dif = dif - 1;
-        }
-        if (dif < 3600) {
-          int m = dif ~/ 60;
-          int s = dif - (60 * m);
-          display = TimerDisplay(
-            min: m.toString(),
-            seconds: s.toString(),
-          );
-          dif = dif - 1;
-        }
-        if (dif < 86400) {
-          int h = dif ~/ 3600;
-          int t = dif - (3600 * h);
-          int m = t ~/ 60;
-          int s = t - (60 * m);
-          display = TimerDisplay(
-            hours: h.toString(),
-            min: m.toString(),
-            seconds: s.toString(),
-          );
-          dif = dif - 1;
-        } else {
-          int d = dif ~/ 86400;
-          int t = dif - (86400 * d);
-          int h = t ~/ 3600;
-          int i = t - (3600 * h);
-          int m = i ~/ 60;
-          int s = i - (60 * m);
-          display = TimerDisplay(
-            days: d.toString(),
-            hours: h.toString(),
-            min: m.toString(),
-            seconds: s.toString(),
-          );
-          dif = dif - 1;
-        }
-      });
-    });
-    return display;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    countdown();
-  }
+class CountdownSystem extends StatelessWidget {
+  final DateTime dateNow = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
+    String abbrMonth = DateFormat.MMM().format(dateNow);
+    String getSystemTime() {
+      var now = new DateTime.now();
+      return new DateFormat("hh : mm : ss").format(now);
+    }
+
     return Scaffold(
-      backgroundColor: Colors.teal,
-      appBar: AppBar(
-        elevation: 0.0,
-        backgroundColor: Colors.teal,
-        centerTitle: true,
-        title: ColorizeAnimatedTextKit(
-          textStyle: TextStyle(
-            fontSize: 30.0,
+      floatingActionButton: InkWell(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => AddEvents(),
+              ));
+        },
+        child: Container(
+          height: 55.0,
+          width: 55.0,
+          decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Color(0xffFCA532),
+                    Color(0xffF4526A),
+                  ])),
+          child: Icon(
+            Icons.add,
+            size: 30.0,
+            color: Colors.white,
           ),
-          text: [
-            "Christmas is coming",
-            "Countdown to Christmas",
-            "It's about to go down",
-          ],
-          colors: [
-            Colors.white,
-            Colors.teal,
-            Colors.red,
-            Colors.white,
-          ],
-          textAlign: TextAlign.start,
-          alignment: AlignmentDirectional.topStart,
         ),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          SizedBox(height: 20.0,),
-          Center(child: display),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+      // FloatingActionButton(
+      //   child: Icon(Icons.add),
+      //   onPressed: () {},
+      //   backgroundColor: Color(0xffFCA532),
+      // ),
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 10.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Icon(Icons.copyright, color: Colors.white,size: 15.0,),
-              Padding(
-                padding: const EdgeInsets.only(left: 5.0),
-                child: Text("Oluseye Obitola", style: TextStyle(color: Colors.white),),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Today: $abbrMonth ${dateNow.day}, ${dateNow.year}",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  IconButton(
+                    color: Colors.black,
+                    icon: Icon(Icons.settings),
+                    onPressed: () {},
+                  )
+                ],
+              ),
+              TimerBuilder.periodic(Duration(seconds: 1), builder: (context) {
+                return Text(
+                  "${getSystemTime()}",
+                  style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xffFCA532)),
+                );
+              }),
+              Expanded(
+                flex: 1,
+                child: Consumer<EventData>(
+                  builder: (context, eventData, _) => ListView.builder(
+                    itemCount: eventData.events.length,
+                    itemBuilder: (context, index) {
+                      var countDownDetails = eventData.events[index];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 20.0),
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => FullScreen(
+                                       eventName: countDownDetails.title,
+                            date: countDownDetails.date,
+                            colors: countDownDetails.colors,
+                            note: countDownDetails.note,
+                                    )));
+                          },
+                          child: CountDownCard(
+                            eventName: countDownDetails.title,
+                            date: countDownDetails.date,
+                            colors: countDownDetails.colors,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
               ),
             ],
-          )
-        ],
-      ),
-    );
-  }
-}
-
-class TimerDisplay extends StatelessWidget {
-  final String days;
-  final String hours;
-  final String min;
-  final String seconds;
-
-  TimerDisplay({this.hours, this.days, this.min, this.seconds});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        CountDownCard(days, "Day(s)"),
-        CountDownCard(hours, "Hour(s)"),
-        CountDownCard(min, "Minute(s)"),
-        CountDownCard(seconds, "Second(s)"),
-      ],
-    );
-  }
-}
-
-class CountDownCard extends StatelessWidget {
-  final String time;
-  final String label;
-
-  CountDownCard(this.time, this.label);
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0)
-      ),
-      color: Colors.white,
-      child: Container(
-        height: 120.0,
-        width: 120.0,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            Expanded(
-              flex: 1,
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.tealAccent,
-                    borderRadius: BorderRadius.only(topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0))
-                ),
-                width: double.infinity,
-                child: Center(
-                  child: Text(
-                    label,
-                    style: TextStyle( color: Colors.black,fontSize: 18.0, fontStyle: FontStyle.italic, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 3.0,
-            ),
-            Expanded(
-              flex: 3,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.red,
-                  borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10.0), bottomRight: Radius.circular(10.0), ),
-                ),
-                width: double.infinity,
-                child: Center(
-                  child: Text(
-                    time,
-                    style: TextStyle(
-                        fontSize: 45.0,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  ),
-                ),
-
-              ),
-            )
-          ],
+          ),
         ),
       ),
     );
