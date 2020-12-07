@@ -1,4 +1,4 @@
-package com.oluseye.christmascountdown
+package com.oluseye.evento
 
 import io.flutter.app.FlutterApplication
 import io.flutter.plugins.androidalarmmanager.AlarmService

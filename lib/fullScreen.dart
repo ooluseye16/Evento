@@ -2,11 +2,14 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:android_alarm_manager/android_alarm_manager.dart';
-//import 'package:assets_audio_player/assets_audio_player.dart';
-import 'package:christmascountdown/components/timeRemaining.dart';
+import 'package:evento/components/timeRemaining.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:provider/provider.dart';
+
+import 'events.dart';
 
 class FullScreen extends StatefulWidget {
   final String eventName;
@@ -20,11 +23,15 @@ class FullScreen extends StatefulWidget {
   _FullScreenState createState() => _FullScreenState();
 }
 
-playSong() {
+final AudioPlayer player = AudioPlayer();
+Future<void> setUpPlayer() async {
+  await player.setAsset('assets/audio/scatter.mp3');
+  player.play().timeout(Duration(seconds: 60), onTimeout: () => player.stop());
+}
+
+playSong(){
   print("Worked");
-//  AssetsAudioPlayer.playAndForget(
-  //  Audio("assets/audio/scatter.mp3"),
-  //);
+  setUpPlayer();
 }
 
 class _FullScreenState extends State<FullScreen> {
@@ -43,6 +50,7 @@ class _FullScreenState extends State<FullScreen> {
           if (dif < 0) {
             AndroidAlarmManager.oneShot(Duration(seconds: 1), 0, playSong());
             t.cancel();
+             Provider.of<EventData>(context, listen: false).deleteCard(widget.eventName);
           } else if (dif < 60) {
             display = TimeRemaining(
               days: '00',

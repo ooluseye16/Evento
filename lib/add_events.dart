@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 
 import 'events.dart';
 
-
 class AddEvents extends StatefulWidget {
   @override
   _AddEventsState createState() => _AddEventsState();
@@ -12,7 +11,7 @@ class AddEvents extends StatefulWidget {
 
 class _AddEventsState extends State<AddEvents> {
   String eventTitle;
-  String  eventNote;
+  String eventNote;
   List<String> imageFrom = [
     'None',
     'Auto',
@@ -37,7 +36,8 @@ class _AddEventsState extends State<AddEvents> {
 
   String selectedEvent;
   String selectedImageFrom;
- DateTime selectedDate = DateTime.now();
+  DateTime selectedDate = DateTime.now();
+  final TextEditingController _controller = new TextEditingController();
   Future<void> _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
         context: context,
@@ -78,6 +78,7 @@ class _AddEventsState extends State<AddEvents> {
       },
     );
   }
+
   TextEditingController controller = TextEditingController();
 
   @override
@@ -112,9 +113,10 @@ class _AddEventsState extends State<AddEvents> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(
-                          icon: Icon(Icons.arrow_back), onPressed: () {
+                          icon: Icon(Icons.arrow_back),
+                          onPressed: () {
                             Navigator.pop(context);
-                      }),
+                          }),
                       Row(
                         children: [
                           Stack(
@@ -171,12 +173,12 @@ class _AddEventsState extends State<AddEvents> {
                     ListTile(
                       leading: Icon(Icons.edit),
                       title: TextField(
-                      //  controller: controller,
+                        //  controller: controller,
                         onChanged: (value) {
                           setState(() {
                             eventTitle = value;
                           });
-                          },
+                        },
                         decoration: InputDecoration(
                           hintText: "Title",
                           border: InputBorder.none,
@@ -191,18 +193,19 @@ class _AddEventsState extends State<AddEvents> {
                     ),
                     CustomDivider(),
                     ListTile(
-                      leading:  Icon(Icons.event),
-                      title: Text("Date"),
-                      trailing: InkWell(
-                        onTap: (){
-                          _selectDate(context);
-                        },
-                        child: selectedDate != null? Text("${selectedDate.toLocal()}".split(' ')[0]): Text("SELECT DATE"),
-                      )
-                    ),
+                        leading: Icon(Icons.event),
+                        title: Text("Date"),
+                        trailing: InkWell(
+                          onTap: () {
+                            _selectDate(context);
+                          },
+                          child: selectedDate != null
+                              ? Text("${selectedDate.toLocal()}".split(' ')[0])
+                              : Text("SELECT DATE"),
+                        )),
                     CustomDivider(),
                     ListTile(
-                      leading:  Icon(Icons.repeat_rounded),
+                      leading: Icon(Icons.repeat_rounded),
                       title: Text("Repeat"),
                       trailing:
                           InkWell(child: Text("ADD REPEAT"), onTap: () {}),
@@ -223,62 +226,67 @@ class _AddEventsState extends State<AddEvents> {
                     ListTile(
                       leading: Icon(Icons.note),
                       title: Text("Note"),
-                      trailing: InkWell(child: Text("ADD NOTE"), onTap: () {
-                        return showDialog<void>(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                actions: [
-                                  InkWell(
-                                    child: Text("Cancel",style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    )),
-                                    onTap: () {
-                                      setState(() {
-                                        eventNote = '';
-                                      });
-                                      Navigator.pop(context);
-                                      },
-                                  ),
-                                  InkWell(
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                                      child: Text("Ok", style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),),
+                      trailing: InkWell(
+                          child: Text("ADD NOTE"),
+                          onTap: () {
+                            return showDialog<void>(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    actions: [
+                                      InkWell(
+                                        child: Text("Cancel",
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                            )),
+                                        onTap: () {
+                                          _controller.clear();
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                      InkWell(
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10.0),
+                                          child: Text(
+                                            "Ok",
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                        onTap: () {
+                                          Navigator.pop(context);
+                                        },
+                                      )
+                                    ],
+                                    title: Text("Note"),
+                                    contentPadding: EdgeInsets.all(10.0),
+                                    content: Container(
+                                      padding: EdgeInsets.all(5.0),
+                                      height: 200.0,
+                                      // width: 100.0,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(color: Colors.grey),
+                                      ),
+                                      child: TextField(
+                                        controller: controller,
+                                        maxLines: null,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            eventNote = value;
+                                          });
+                                        },
+                                        decoration: InputDecoration(
+                                          hintText: "Note",
+                                          border: InputBorder.none,
+                                        ),
+                                      ),
                                     ),
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                    },
-                                  )
-                                ],
-                                title: Text("Note"),
-                                contentPadding: EdgeInsets.all(10.0),
-                                content: Container(
-                                  padding: EdgeInsets.all(5.0),
-                                   height: 200.0,
-                                  // width: 100.0,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(color: Colors.grey),
-                                  ),
-                                  child: TextField(
-                                    maxLines: null,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        eventNote = value;
-                                      });
-                                    },
-                                    decoration: InputDecoration(
-                                      hintText: "Note",
-                                      border: InputBorder.none,
-                                    ),
-                                  ),
-                                ),
-
-                              );
-                            });
-                      }),
+                                  );
+                                });
+                          }),
                     ),
                     Align(
                         alignment: Alignment.centerRight,
@@ -287,6 +295,7 @@ class _AddEventsState extends State<AddEvents> {
                             eventData.addNewCard(Event(
                               title: eventTitle,
                               date: selectedDate,
+                              note: eventNote,
                             ));
                             Navigator.pop(context);
                           },

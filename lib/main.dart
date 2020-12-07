@@ -1,8 +1,8 @@
 import 'package:android_alarm_manager/android_alarm_manager.dart';
-import 'package:christmascountdown/add_events.dart';
-import 'package:christmascountdown/events.dart';
-import 'package:christmascountdown/fullScreen.dart';
-import 'package:christmascountdown/widgets/countdownCard.dart';
+import 'package:evento/add_events.dart';
+import 'package:evento/events.dart';
+import 'package:evento/fullScreen.dart';
+import 'package:evento/widgets/countdownCard.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -18,10 +18,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      color: Color(0xffF4526A),
+      color: Color(0xffFCA532),
       debugShowCheckedModeBanner: false,
       theme: ThemeData(iconTheme: IconThemeData(color: Colors.white)),
-      title: "Countdown to Christmas",
+      title: "Evento",
       home: CountdownSystem(),
     );
   }
@@ -66,11 +66,6 @@ class CountdownSystem extends StatelessWidget {
           ),
         ),
       ),
-      // FloatingActionButton(
-      //   child: Icon(Icons.add),
-      //   onPressed: () {},
-      //   backgroundColor: Color(0xffFCA532),
-      // ),
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
@@ -115,6 +110,40 @@ class CountdownSystem extends StatelessWidget {
                       return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 20.0),
                         child: InkWell(
+                          onLongPress: () {
+                             return showDialog<void>(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: Text("Delete?"),
+                                content: Container(
+                                  child: Text("Do you want to delete this event?"),
+                                ),
+                                actions: [
+                                  InkWell(
+                                    child: Text("No",style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    )),
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                      },
+                                  ),
+                                  InkWell(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                                      child: Text("Yes", style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),),
+                                    ),
+                                    onTap: () {
+                                       Provider.of<EventData>(context, listen: false).deleteCard(countDownDetails.title);
+                                      Navigator.pop(context);
+                                    },
+                                  )
+                                ],
+                              );
+                            });
+                          },
                           onTap: () {
                             Navigator.push(
                                 context,

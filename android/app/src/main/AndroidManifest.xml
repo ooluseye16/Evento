@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.oluseye.christmascountdown">
+    package="com.oluseye.evento">
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that
          calls FlutterMain.startInitialization(this); in its onCreate method.
          In most cases you can leave this as-is, but you if you want to provide
@@ -9,7 +9,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <application
         android:name="Application"
-        android:label="Countdown to Christmas"
+        android:label="Evento"
         android:icon="@mipmap/ic_launcher">
 
         <service

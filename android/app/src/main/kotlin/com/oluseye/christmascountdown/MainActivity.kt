@@ -1,4 +1,4 @@
-package com.oluseye.christmascountdown
+package com.oluseye.evento
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity
