@@ -1,6 +1,7 @@
 import 'package:android_alarm_manager/android_alarm_manager.dart';
 import 'package:evento/model/eventData.dart';
 import 'package:evento/ui/countdownSystem.dart';
+import 'package:evento/ui/splashScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:hive/hive.dart';
@@ -28,21 +29,14 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        color: Color(0xffFCA532),
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(iconTheme: IconThemeData(color: Colors.white)),
-        title: "Evento",
-        home: FutureBuilder(
-            future: Hive.openBox('events'),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                if (snapshot.hasError)
-                  return Text(snapshot.error.toString());
-                else
-                  return CountdownSystem();
-              } else
-                return Scaffold();
-            }));
+      color: Color(0xffFCA532),
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+          accentColor: Colors.white,
+          iconTheme: IconThemeData(color: Colors.white)),
+      title: "Evento",
+      home: CustomSplashScreen(),
+    );
   }
 
   @override
@@ -51,4 +45,3 @@ class _MyAppState extends State<MyApp> {
     super.dispose();
   }
 }
-

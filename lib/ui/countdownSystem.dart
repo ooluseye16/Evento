@@ -11,6 +11,12 @@ import 'fullScreen.dart';
 
 class CountdownSystem extends StatelessWidget {
   final DateTime dateNow = DateTime.now();
+  final Shader linearGradient = LinearGradient(
+  colors: <Color>[
+    Color(0xffFEA831),
+   Color(0xffEE197F),
+   ],
+).createShader(Rect.fromLTWH(0.0, 0.0, 400.0, 50.0));
 
   @override
   Widget build(BuildContext context) {
@@ -19,8 +25,14 @@ class CountdownSystem extends StatelessWidget {
       var now = new DateTime.now();
       return new DateFormat("hh : mm : ss").format(now);
     }
-
-    return Scaffold(
+    return FutureBuilder(
+        future: Hive.openBox('events'),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasError)
+              return Text(snapshot.error.toString());
+            else
+              return Scaffold(
       floatingActionButton: InkWell(
         onTap: () {
           Navigator.push(
@@ -79,7 +91,9 @@ class CountdownSystem extends StatelessWidget {
                   style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.w500,
-                      color: Color(0xffFCA532)),
+                      foreground: Paint()..shader = linearGradient,
+                     // color: Color(0xffFCA532)
+                     ),
                 );
               }),
               Expanded(
@@ -93,6 +107,11 @@ class CountdownSystem extends StatelessWidget {
         ),
       ),
     );
+          } else
+            return Scaffold();
+        });
+
+    
   }
 
   Widget buildListView(EventData eventData) {
@@ -176,8 +195,16 @@ class CountdownSystem extends StatelessWidget {
             },
           )
         : Container(
-            child: Center(
-              child: Text("No events added yet..."),
+          padding: EdgeInsets.symmetric(horizontal: 20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("You haven’t added any events yet", style: TextStyle(fontWeight: FontWeight.w500,fontSize: 24.0, foreground: Paint()..shader = linearGradient,), textAlign: TextAlign.center,),
+                Padding(
+                  padding: const EdgeInsets.only(top: 15.0),
+                  child: Text("Add an event you’re excited about.A birthday, a concert or a party ", style: TextStyle(fontWeight: FontWeight.w400,fontSize: 18.0, color: Color(0xff121212)), textAlign: TextAlign.center,),
+                ),
+              ],
             ),
           );
   }

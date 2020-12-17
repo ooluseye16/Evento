@@ -62,7 +62,6 @@ class _AddEventsState extends State<AddEvents> {
           _selectedTime.hour,
           _selectedTime.minute,
         );
-        
       });
     }
   }
