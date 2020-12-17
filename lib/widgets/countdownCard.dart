@@ -8,14 +8,15 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '../events.dart';
+import '../model/eventData.dart';
 
 class CountDownCard extends StatefulWidget {
+  final int id;
   final String eventName;
   final DateTime date;
   final List<Color> colors;
 
-  CountDownCard({this.eventName, this.date, this.colors});
+  CountDownCard({ this. id, this.eventName, this.date, this.colors});
 
   @override
   _CountDownCardState createState() => _CountDownCardState();
@@ -23,8 +24,8 @@ class CountDownCard extends StatefulWidget {
 
 final AudioPlayer player = AudioPlayer();
 Future<void> setUpPlayer() async {
-  var duration = await player.setAsset('assets/audio/scatter.mp3');
-  player.play().timeout(Duration(seconds: 60), onTimeout: () => player.stop());
+ // var duration = await player.setAsset('assets/audio/scatter.mp3');
+  //player.play().timeout(Duration(seconds: 60), onTimeout: () => player.stop());
 }
 
 playSong() {
@@ -46,9 +47,10 @@ class _CountDownCardState extends State<CountDownCard> {
       if (this.mounted) {
         setState(() {
           if (dif < 0) {
-           AndroidAlarmManager.oneShot(Duration(seconds: 1), 0, playSong());
-            t.cancel();
-            Provider.of<EventData>(context, listen: false).deleteCard(widget.eventName);
+            Provider.of<EventData>(context, listen: false)
+                .deleteCard(widget.id);
+            AndroidAlarmManager.oneShotAt(widget.date, 1, playSong(), wakeup: true);
+            t.cancel();          
           } else if (dif < 60) {
             display = TimeRemaining(
               days: '0',

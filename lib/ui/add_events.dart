@@ -2,7 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'events.dart';
+import '../model/event.dart';
+import '../model/eventData.dart';
 
 class AddEvents extends StatefulWidget {
   @override
@@ -36,19 +37,46 @@ class _AddEventsState extends State<AddEvents> {
 
   String selectedEvent;
   String selectedImageFrom;
-  DateTime selectedDate = DateTime.now();
+  DateTime selectedDate;
   final TextEditingController _controller = new TextEditingController();
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime picked = await showDatePicker(
+
+  Future _selectDayAndTime(BuildContext context) async {
+    DateTime _selectedDay = await showDatePicker(
         context: context,
-        initialDate: selectedDate,
-        firstDate: DateTime(2020, 1),
-        lastDate: DateTime(2101));
-    if (picked != null && picked != selectedDate)
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2018),
+        lastDate: DateTime(2030),
+        builder: (BuildContext context, Widget child) => child);
+
+    TimeOfDay _selectedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (_selectedDay != null && _selectedTime != null) {
       setState(() {
-        selectedDate = picked;
+        selectedDate = DateTime(
+          _selectedDay.year,
+          _selectedDay.month,
+          _selectedDay.day,
+          _selectedTime.hour,
+          _selectedTime.minute,
+        );
+        
       });
+    }
   }
+  // Future<void> _selectDate(BuildContext context) async {
+  //   final DateTime picked = await showDatePicker(
+  //       context: context,
+  //       initialDate: selectedDate,
+  //       firstDate: DateTime(2020, 1),
+  //       lastDate: DateTime(2101));
+  //   if (picked != null && picked != selectedDate)
+  //     setState(() {
+  //       selectedDate = picked;
+  //     });
+  // }
 
   DropdownButton dropdown(List<String> listedItem, String selected,
       List<DropdownMenuItem<String>> dropdownItems) {
@@ -197,7 +225,7 @@ class _AddEventsState extends State<AddEvents> {
                         title: Text("Date"),
                         trailing: InkWell(
                           onTap: () {
-                            _selectDate(context);
+                            _selectDayAndTime(context);
                           },
                           child: selectedDate != null
                               ? Text("${selectedDate.toLocal()}".split(' ')[0])
@@ -292,11 +320,13 @@ class _AddEventsState extends State<AddEvents> {
                         alignment: Alignment.centerRight,
                         child: RaisedButton(
                           onPressed: () {
-                            eventData.addNewCard(Event(
-                              title: eventTitle,
-                              date: selectedDate,
-                              note: eventNote,
-                            ));
+                            if (eventTitle != null && selectedDate != null) {
+                              eventData.addNewCard(Event(
+                                title: eventTitle,
+                                date: selectedDate,
+                                note: eventNote,
+                              ));
+                            }
                             Navigator.pop(context);
                           },
                           child: Text(
