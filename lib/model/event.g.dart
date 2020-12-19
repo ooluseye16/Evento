@@ -19,7 +19,7 @@ class EventAdapter extends TypeAdapter<Event> {
     return Event(
       title: fields[0] as String,
       date: fields[1] as DateTime,
-      backgroundImage: fields[2] as Image,
+      imagePath: fields[2] as String,
       repeat: fields[3] as String,
       note: fields[4] as String,
       song: fields[5] as String,
@@ -35,7 +35,7 @@ class EventAdapter extends TypeAdapter<Event> {
       ..writeByte(1)
       ..write(obj.date)
       ..writeByte(2)
-      ..write(obj.backgroundImage)
+      ..write(obj.imagePath)
       ..writeByte(3)
       ..write(obj.repeat)
       ..writeByte(4)

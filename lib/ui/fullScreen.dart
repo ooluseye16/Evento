@@ -6,14 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:just_audio/just_audio.dart';
 
-
 class FullScreen extends StatefulWidget {
   final String eventName;
   final DateTime date;
   final List<Color> colors;
   final String note;
+  final String imagePath;
 
-  FullScreen({this.eventName, this.date, this.colors, this.note});
+  FullScreen({this.eventName, this.date, this.colors, this.note, this.imagePath});
 
   @override
   _FullScreenState createState() => _FullScreenState();
@@ -25,7 +25,7 @@ Future<void> setUpPlayer() async {
   player.play().timeout(Duration(seconds: 60), onTimeout: () => player.stop());
 }
 
-playSong(){
+playSong() {
   print("Worked");
   setUpPlayer();
 }
@@ -251,22 +251,33 @@ class _FullScreenState extends State<FullScreen> {
                 )
               ],
             ),
-
             Container(
-              height: MediaQuery.of(context).size.height/2,
-              child:widget.note != null?Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 20.0),
-                    child: Text("Note", style: TextStyle(color: Colors.white, fontSize: 18.0, fontWeight: FontWeight.w600),),
-                  ),
-                  
-                  Text(widget.note, style: TextStyle(color: Colors.white, fontSize: 18.0, fontWeight: FontWeight.w600),),
-                ],
-              ): SizedBox.shrink(),
-
+              height: MediaQuery.of(context).size.height / 2,
+              child: widget.note != null
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 20.0),
+                          child: Text(
+                            "Note",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                        Text(
+                          widget.note,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    )
+                  : SizedBox.shrink(),
             )
           ],
         ),

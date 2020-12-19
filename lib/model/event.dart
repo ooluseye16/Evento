@@ -10,7 +10,7 @@ class Event {
   @HiveField(1)
   final DateTime date;
   @HiveField(2)
-  final Image backgroundImage;
+  final String imagePath;
   @HiveField(3)
   final String repeat;
   @HiveField(4)
@@ -22,7 +22,7 @@ class Event {
     @required this.title,
     @required this.date,
    // this.colors,
-    this.backgroundImage,
+    this.imagePath,
     this.repeat,
     this.note,
     this.song,

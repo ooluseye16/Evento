@@ -37,6 +37,7 @@ dependencies:
   hive:
   hive_flutter:
   path_provider:
+  image_picker: 
 
 
 dev_dependencies:

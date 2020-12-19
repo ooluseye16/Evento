@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:ui';
 import 'package:just_audio/just_audio.dart';
 import 'package:android_alarm_manager/android_alarm_manager.dart';
@@ -15,8 +16,10 @@ class CountDownCard extends StatefulWidget {
   final String eventName;
   final DateTime date;
   final List<Color> colors;
+  final String imagePath;
 
-  CountDownCard({ this. id, this.eventName, this.date, this.colors});
+  CountDownCard(
+      {this.id, this.eventName, this.date, this.colors, this.imagePath});
 
   @override
   _CountDownCardState createState() => _CountDownCardState();
@@ -24,7 +27,7 @@ class CountDownCard extends StatefulWidget {
 
 final AudioPlayer player = AudioPlayer();
 Future<void> setUpPlayer() async {
- // var duration = await player.setAsset('assets/audio/scatter.mp3');
+  // var duration = await player.setAsset('assets/audio/scatter.mp3');
   //player.play().timeout(Duration(seconds: 60), onTimeout: () => player.stop());
 }
 
@@ -49,8 +52,9 @@ class _CountDownCardState extends State<CountDownCard> {
           if (dif < 0) {
             Provider.of<EventData>(context, listen: false)
                 .deleteCard(widget.id);
-            AndroidAlarmManager.oneShotAt(widget.date, 1, playSong(), wakeup: true);
-            t.cancel();          
+            AndroidAlarmManager.oneShotAt(widget.date, 1, playSong(),
+                wakeup: true);
+            t.cancel();
           } else if (dif < 60) {
             display = TimeRemaining(
               days: '0',
@@ -124,125 +128,154 @@ class _CountDownCardState extends State<CountDownCard> {
       Color(0xffFCA532),
       Color(0xffF4526A),
     ];
-    return Container(
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(color: Colors.grey, offset: Offset(0, 0), blurRadius: 2)
-        ],
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: widget.colors != null
-              ? widget.colors
-              : [
-                  Color(0xffFCA532),
-                  Color(0xffF4526A),
-                ],
-        ),
       ),
-      height: 300.0,
-      padding: EdgeInsets.fromLTRB(30.0, 24.0, 24.0, 24.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            widget.eventName,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 28.0,
-              fontWeight: FontWeight.w700,
+      child: Stack(
+        children: [
+          Container(
+              height: 300.0,
+              width: MediaQuery.of(context).size.width,
+              child: Image.file(
+                File(widget.imagePath),
+                fit: BoxFit.cover,
+              )),
+          Opacity(
+            opacity: 0.4,
+            child: Container(
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.grey, offset: Offset(0, 0), blurRadius: 2)
+                ],
+                borderRadius: BorderRadius.circular(20.0),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: widget.colors != null
+                      ? widget.colors
+                      : [
+                          Color(0xffFCA532),
+                          Color(0xffF4526A),
+                        ],
+                ),
+              ),
+              height: 300.0,
             ),
           ),
-          Text(
-            '${dayInWords()} ${widget.date.day} ${monthInWords()} ${widget.date.year}',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          SizedBox(
-            height: 20.0,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CustomArrangement(
-                  timeRemaining: display != null ? display.days : '0',
-                  inWhat: "DAYS"),
-              CustomArrangement(
-                timeRemaining: display != null ? display.hrs : '0',
-                inWhat: 'HRS',
-              ),
-              CustomArrangement(
-                timeRemaining: display != null ? display.mins : '0',
-                inWhat: 'MINS',
-              ),
-              CustomArrangement(
-                timeRemaining: display != null ? display.secs : '0',
-                inWhat: 'SECS',
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 20.0,
-          ),
-          ButtonBar(
-            alignment: MainAxisAlignment.start,
-            children: [
-              RaisedButton(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0)),
-                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                onPressed: () {},
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+          Container(
+            padding: EdgeInsets.fromLTRB(30.0, 24.0, 24.0, 24.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  widget.eventName,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 28.0,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                SizedBox(
+                  height: 10.0,
+                ),
+                Text(
+                  '${dayInWords()} ${widget.date.day} ${monthInWords()} ${widget.date.year}',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                SizedBox(
+                  height: 20.0,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Icon(
-                      Icons.share,
-                      color:
-                          widget.colors != null ? widget.colors[0] : colors[0],
-                      size: 20.0,
+                    CustomArrangement(
+                        timeRemaining: display != null ? display.days : '0',
+                        inWhat: "DAYS"),
+                    CustomArrangement(
+                      timeRemaining: display != null ? display.hrs : '0',
+                      inWhat: 'HRS',
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8.0),
+                    CustomArrangement(
+                      timeRemaining: display != null ? display.mins : '0',
+                      inWhat: 'MINS',
+                    ),
+                    CustomArrangement(
+                      timeRemaining: display != null ? display.secs : '0',
+                      inWhat: 'SECS',
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 20.0,
+                ),
+                ButtonBar(
+                  alignment: MainAxisAlignment.start,
+                  children: [
+                    RaisedButton(
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0)),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                      onPressed: () {},
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Icon(
+                            Icons.share,
+                            color: widget.colors != null
+                                ? widget.colors[0]
+                                : colors[0],
+                            size: 20.0,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Text(
+                              'Share',
+                              style: TextStyle(
+                                color: widget.colors != null
+                                    ? widget.colors[0]
+                                    : colors[0],
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    OutlineButton(
+                      borderSide: BorderSide(
+                        width: 2.0,
+                        color: Colors.white,
+                      ),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0)),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                      textColor: Colors.white,
+                      onPressed: () {},
                       child: Text(
-                        'Share',
+                        "Edit",
                         style: TextStyle(
-                          color: widget.colors != null
-                              ? widget.colors[0]
-                              : colors[0],
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                    ),
+                    )
                   ],
-                ),
-              ),
-              OutlineButton(
-                borderSide: BorderSide(
-                  width: 2.0,
-                  color: Colors.white,
-                ),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0)),
-                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                textColor: Colors.white,
-                onPressed: () {},
-                child: Text(
-                  "Edit",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              )
-            ],
-          )
+                )
+              ],
+            ),
+          ),
         ],
       ),
     );

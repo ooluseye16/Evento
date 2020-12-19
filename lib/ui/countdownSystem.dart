@@ -181,6 +181,7 @@ class CountdownSystem extends StatelessWidget {
                             builder: (context) => FullScreen(
                                   eventName: countDownDetails.title,
                                   date: countDownDetails.date,
+                                   imagePath: countDownDetails.imagePath,
                                   //  colors: countDownDetails.colors,
                                   note: countDownDetails.note,
                                 )));
@@ -188,6 +189,7 @@ class CountdownSystem extends StatelessWidget {
                   child: CountDownCard(
                     eventName: countDownDetails.title,
                     date: countDownDetails.date,
+                    imagePath: countDownDetails.imagePath,
                     //colors: countDownDetails.colors,
                   ),
                 ),

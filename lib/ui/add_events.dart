@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../model/event.dart';
@@ -13,10 +16,30 @@ class AddEvents extends StatefulWidget {
 class _AddEventsState extends State<AddEvents> {
   String eventTitle;
   String eventNote;
-  List<String> imageFrom = [
-    'None',
-    'Auto',
-    'Choose from Gallery',
+  File image;
+  final picker = ImagePicker();
+
+  Future getImage(ImageSource source) async {
+    final pickedFile = await picker.getImage(source: source);
+
+    setState(() {
+      if (pickedFile != null) {
+        image = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  List<Map<String, dynamic>> imageFrom = [
+    {
+      "title": "Camera",
+      "source": ImageSource.camera,
+    },
+    {
+      "title": "From Gallery",
+      "source": ImageSource.gallery,
+    }
   ];
 
   List<String> events = [
@@ -65,17 +88,6 @@ class _AddEventsState extends State<AddEvents> {
       });
     }
   }
-  // Future<void> _selectDate(BuildContext context) async {
-  //   final DateTime picked = await showDatePicker(
-  //       context: context,
-  //       initialDate: selectedDate,
-  //       firstDate: DateTime(2020, 1),
-  //       lastDate: DateTime(2101));
-  //   if (picked != null && picked != selectedDate)
-  //     setState(() {
-  //       selectedDate = picked;
-  //     });
-  // }
 
   DropdownButton dropdown(List<String> listedItem, String selected,
       List<DropdownMenuItem<String>> dropdownItems) {
@@ -101,6 +113,34 @@ class _AddEventsState extends State<AddEvents> {
           } else {
             selectedImageFrom = value;
           }
+        });
+      },
+    );
+  }
+
+  DropdownButton imageSource() {
+    List<DropdownMenuItem> imageDropdownItems = [];
+    try {
+      for (var item in imageFrom) {
+        var newItem = DropdownMenuItem(
+          child: Text(item["title"]),
+          value: item,
+          onTap: () {
+            getImage(item["source"]);
+          },
+        );
+        imageDropdownItems.add(newItem);
+      }
+    } catch (e) {
+      print(e);
+    }
+    return DropdownButton(
+      underline: SizedBox.shrink(),
+      value: selectedImageFrom,
+      items: imageDropdownItems,
+      onChanged: (value) {
+        setState(() {
+          selectedImageFrom = value;
         });
       },
     );
@@ -241,7 +281,7 @@ class _AddEventsState extends State<AddEvents> {
                     ListTile(
                       leading: Icon(Icons.add_a_photo),
                       title: Text("Photo"),
-                      trailing: dropdown(imageFrom, selectedImageFrom, []),
+                      trailing: imageSource(),
                     ),
                     CustomDivider(),
                     ListTile(
@@ -254,7 +294,9 @@ class _AddEventsState extends State<AddEvents> {
                       leading: Icon(Icons.note),
                       title: Text("Note"),
                       trailing: InkWell(
-                          child: Text("ADD NOTE"),
+                          child: eventNote == null
+                              ? Text("ADD NOTE")
+                              : Text("NOTE ADDED"),
                           onTap: () {
                             return showDialog<void>(
                                 context: context,
@@ -284,6 +326,11 @@ class _AddEventsState extends State<AddEvents> {
                                         ),
                                         onTap: () {
                                           Navigator.pop(context);
+                                          Scaffold.of(context)
+                                              .showSnackBar(SnackBar(
+                                                behavior: SnackBarBehavior.floating,
+                                            content: Text("Note added!"),
+                                          ));
                                         },
                                       )
                                     ],
@@ -324,6 +371,7 @@ class _AddEventsState extends State<AddEvents> {
                                 title: eventTitle,
                                 date: selectedDate,
                                 note: eventNote,
+                                imagePath: image.path,
                               ));
                             }
                             Navigator.pop(context);
