@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:evento/components/timeRemaining.dart';
+import 'package:evento/widgets/timeleft_and_unit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -172,18 +173,18 @@ class _FullScreenState extends State<FullScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CustomArrangement(
+                    TimeLeftAndUnit(
                         timeRemaining: display != null ? display.days : '00',
                         inWhat: "DAYS"),
-                    CustomArrangement(
+                    TimeLeftAndUnit(
                       timeRemaining: display != null ? display.hrs : '00',
                       inWhat: 'HRS',
                     ),
-                    CustomArrangement(
+                    TimeLeftAndUnit(
                       timeRemaining: display != null ? display.mins : '00',
                       inWhat: 'MINS',
                     ),
-                    CustomArrangement(
+                    TimeLeftAndUnit(
                       timeRemaining: display != null ? display.secs : '00',
                       inWhat: 'SECS',
                     ),
@@ -281,40 +282,6 @@ class _FullScreenState extends State<FullScreen> {
             )
           ],
         ),
-      ),
-    );
-  }
-}
-
-class CustomArrangement extends StatelessWidget {
-  final String timeRemaining;
-  final String inWhat;
-  CustomArrangement({
-    this.timeRemaining,
-    this.inWhat,
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          Text(
-            timeRemaining != null ? timeRemaining : '00',
-            style: TextStyle(
-                color: Colors.white,
-                fontSize: 38.0,
-                fontWeight: FontWeight.w700),
-          ),
-          Text(
-            inWhat,
-            style: TextStyle(
-                color: Colors.white,
-                fontSize: 14.0,
-                fontWeight: FontWeight.w500),
-          ),
-        ],
       ),
     );
   }

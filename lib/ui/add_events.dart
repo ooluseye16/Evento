@@ -1,12 +1,12 @@
 import 'dart:io';
 
+import 'package:evento/model/event.dart';
+import 'package:evento/model/eventData.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
-
-import '../model/event.dart';
-import '../model/eventData.dart';
+import '../constants.dart';
 
 class AddEvents extends StatefulWidget {
   @override
@@ -17,10 +17,10 @@ class _AddEventsState extends State<AddEvents> {
   String eventTitle;
   String eventNote;
   File image;
-  final picker = ImagePicker();
+  //final ImagePicker _picker = ImagePicker();
 
   Future getImage(ImageSource source) async {
-    final pickedFile = await picker.getImage(source: source);
+    final pickedFile = await ImagePicker.pickImage(source: source);
 
     setState(() {
       if (pickedFile != null) {
@@ -40,22 +40,6 @@ class _AddEventsState extends State<AddEvents> {
       "title": "From Gallery",
       "source": ImageSource.gallery,
     }
-  ];
-
-  List<String> events = [
-    'Anniversary',
-    'Announcement',
-    'Birthday',
-    'Concert',
-    'Convention',
-    'Examination',
-    'Flight',
-    'Holiday',
-    'Movie/TV',
-    'Party',
-    'Religious',
-    'Trip',
-    'Others',
   ];
 
   String selectedEvent;
@@ -150,7 +134,7 @@ class _AddEventsState extends State<AddEvents> {
 
   @override
   Widget build(BuildContext context) {
-    var eventData = Provider.of<EventData>(context);
+    //var eventData = Provider.of<EventData>(context);
     return Scaffold(
       body: SafeArea(
         child: ListView(
@@ -326,9 +310,9 @@ class _AddEventsState extends State<AddEvents> {
                                         ),
                                         onTap: () {
                                           Navigator.pop(context);
-                                          Scaffold.of(context)
+                                          ScaffoldMessenger.of(context)
                                               .showSnackBar(SnackBar(
-                                                behavior: SnackBarBehavior.floating,
+                                            behavior: SnackBarBehavior.floating,
                                             content: Text("Note added!"),
                                           ));
                                         },
@@ -364,24 +348,34 @@ class _AddEventsState extends State<AddEvents> {
                     ),
                     Align(
                         alignment: Alignment.centerRight,
-                        child: RaisedButton(
-                          onPressed: () {
-                            if (eventTitle != null && selectedDate != null) {
-                              eventData.addNewCard(Event(
-                                title: eventTitle,
-                                date: selectedDate,
-                                note: eventNote,
-                                imagePath: image.path,
-                              ));
-                            }
-                            Navigator.pop(context);
-                          },
-                          child: Text(
-                            "ADD EVENT",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          color: Color(0xffFCA532),
-                        ))
+                        child: Consumer(builder: (context, watch, child) {
+                          return ElevatedButton(
+                            onPressed: () {
+                              if (eventTitle != null && selectedDate != null) {
+                                watch(eventListProvider).addNewEvent(Event(
+                                  title: eventTitle,
+                                  date: selectedDate,
+                                  note: eventNote,
+                                  imagePath: image.path,
+                                ));
+                                // eventData.addNewCard(Event(
+                                //   title: eventTitle,
+                                //   date: selectedDate,
+                                //   note: eventNote,
+                                //   imagePath: image.path,
+                                // ));
+                              }
+                              Navigator.pop(context);
+                            },
+                            child: Text(
+                              "ADD EVENT",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              primary: Color(0xffFCA532),
+                            ),
+                          );
+                        }))
                   ],
                 ))
           ],

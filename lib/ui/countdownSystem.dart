@@ -1,9 +1,10 @@
 import 'package:evento/widgets/countdownCard.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:timer_builder/timer_builder.dart';
+import '../constants.dart';
 import '../model/event.dart';
 import '../model/eventData.dart';
 import 'add_events.dart';
@@ -11,12 +12,7 @@ import 'fullScreen.dart';
 
 class CountdownSystem extends StatelessWidget {
   final DateTime dateNow = DateTime.now();
-  final Shader linearGradient = LinearGradient(
-  colors: <Color>[
-    Color(0xffFEA831),
-   Color(0xffEE197F),
-   ],
-).createShader(Rect.fromLTWH(0.0, 0.0, 400.0, 50.0));
+
 
   @override
   Widget build(BuildContext context) {
@@ -98,9 +94,7 @@ class CountdownSystem extends StatelessWidget {
               }),
               Expanded(
                 flex: 1,
-                child: Consumer<EventData>(
-                  builder: (context, eventData, _) => buildListView(eventData),
-                ),
+                child: EventCardListView(),
               ),
             ],
           ),
@@ -113,9 +107,17 @@ class CountdownSystem extends StatelessWidget {
 
     
   }
+}
 
-  Widget buildListView(EventData eventData) {
-    final eventsBox = Hive.box('events');
+class EventCardListView extends ConsumerWidget {
+  const EventCardListView({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, ScopedReader watch) {
+    final eventList = watch(eventListProvider.state);
+  //  final eventsBox = Hive.box('events');
     // for (Event event in eventData.events) {
     //   bool found =
     //       eventsBox.values.any((element) => element.date == event.date);
@@ -126,11 +128,11 @@ class CountdownSystem extends StatelessWidget {
     //   }
     // }
     // eventsBox.addAll(eventData.events);
-    return eventsBox.isNotEmpty
+    return eventList.isNotEmpty
         ? ListView.builder(
-            itemCount: eventsBox.length,
+            itemCount: eventList.length,
             itemBuilder: (context, index) {
-              var countDownDetails = eventsBox.getAt(index) as Event;
+              Event event = eventList[index];
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20.0),
                 child: InkWell(
@@ -165,8 +167,8 @@ class CountdownSystem extends StatelessWidget {
                                   ),
                                 ),
                                 onTap: () {
-                                  Provider.of<EventData>(context, listen: false)
-                                      .deleteCard(index);
+                                  // Provider.of<EventData>(context, listen: false)
+                                  //     .deleteCard(index);
                                   Navigator.pop(context);
                                 },
                               )
@@ -179,18 +181,15 @@ class CountdownSystem extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) => FullScreen(
-                                  eventName: countDownDetails.title,
-                                  date: countDownDetails.date,
-                                   imagePath: countDownDetails.imagePath,
-                                  //  colors: countDownDetails.colors,
-                                  note: countDownDetails.note,
+                                  // eventName: countDownDetails.title,
+                                  // date: countDownDetails.date,
+                                  //  imagePath: countDownDetails.imagePath,
+                                  // //  colors: countDownDetails.colors,
+                                  // note: countDownDetails.note,
                                 )));
                   },
                   child: CountDownCard(
-                    eventName: countDownDetails.title,
-                    date: countDownDetails.date,
-                    imagePath: countDownDetails.imagePath,
-                    //colors: countDownDetails.colors,
+                   event:event ,
                   ),
                 ),
               );
