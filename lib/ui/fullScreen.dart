@@ -14,7 +14,8 @@ class FullScreen extends StatefulWidget {
   final String note;
   final String imagePath;
 
-  FullScreen({this.eventName, this.date, this.colors, this.note, this.imagePath});
+  FullScreen(
+      {this.eventName, this.date, this.colors, this.note, this.imagePath});
 
   @override
   _FullScreenState createState() => _FullScreenState();
@@ -114,10 +115,6 @@ class _FullScreenState extends State<FullScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Color> colors = [
-      Color(0xffFCA532),
-      Color(0xffF4526A),
-    ];
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -193,63 +190,64 @@ class _FullScreenState extends State<FullScreen> {
                 SizedBox(
                   height: 20.0,
                 ),
-                ButtonBar(
-                  alignment: MainAxisAlignment.start,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    RaisedButton(
-                      color: Colors.white,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0)),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                    ElevatedButton.icon(
                       onPressed: () {},
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Icon(
-                            Icons.share,
-                            color: widget.colors != null
-                                ? widget.colors[0]
-                                : colors[0],
-                            size: 20.0,
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.white,
+                        elevation: 1.0,
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 16.0, vertical: 8.0),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0)),
+                      ),
+                      icon: Icon(
+                        Icons.share,
+                        color: Color(0xffFCA532),
+                        size: 20.0,
+                      ),
+                      label: Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: Text(
+                          'Share',
+                          style: TextStyle(
+                            color: Color(0xffFCA532),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: Text(
-                              'Share',
-                              style: TextStyle(
-                                color: widget.colors != null
-                                    ? widget.colors[0]
-                                    : colors[0],
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
-                    OutlineButton(
-                      borderSide: BorderSide(
-                        width: 2.0,
-                        color: Colors.white,
+                    SizedBox(
+                      width: 10.0,
+                    ),
+                    OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        primary: Colors.white,
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 16.0, vertical: 8.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        side: BorderSide(
+                          width: 2.0,
+                          color: Colors.white,
+                        ),
                       ),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0)),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                      textColor: Colors.white,
                       onPressed: () {},
                       child: Text(
                         "Edit",
                         style: TextStyle(
+                          color: Colors.white,
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
                     )
                   ],
-                )
+                ),
               ],
             ),
             Container(
