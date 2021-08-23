@@ -11,7 +11,7 @@ class EventCountDown extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ScopedReader watch) {
-    final display = watch(countDownProvider(eventDate).state);
+    final display = watch(countDownProvider(eventDate));
     return Container(
             padding: EdgeInsets.symmetric(vertical: 20.0),
             child: Row(

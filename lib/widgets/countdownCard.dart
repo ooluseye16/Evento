@@ -1,14 +1,12 @@
 import 'dart:io';
 import 'dart:ui';
-import 'package:evento/model/event.dart';
+import 'package:evento/entities/entities.dart';
 import 'package:evento/widgets/event_card_content.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 
 class CountDownCard extends StatelessWidget {
-
-
   CountDownCard(
       {this.event});
   final Event event;

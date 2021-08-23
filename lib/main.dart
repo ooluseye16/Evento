@@ -1,23 +1,21 @@
-import 'package:android_alarm_manager/android_alarm_manager.dart';
+//import 'package:android_alarm_manager/android_alarm_manager.dart';
 //import 'package:evento/model/eventData.dart';
 // import 'package:evento/ui/countdownSystem.dart';
-import 'package:evento/ui/splashScreen.dart';
+import 'package:evento/screens/splashScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 //import 'package:provider/provider.dart' as provider;
-import 'package:hive/hive.dart';
-import 'package:path_provider/path_provider.dart' as path_provider;
+//import 'package:path_provider/path_provider.dart' as path_provider;
 
-import 'model/event.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final appDocumentDirectory =
-      await path_provider.getApplicationDocumentsDirectory();
-  Hive.init(appDocumentDirectory.path);
-  Hive.registerAdapter(EventAdapter());
+  // final appDocumentDirectory =
+  //     await path_provider.getApplicationDocumentsDirectory();
+  // Hive.init(appDocumentDirectory.path);
+  // Hive.registerAdapter(EventAdapter());
 
-  await AndroidAlarmManager.initialize();
+  // await AndroidAlarmManager.initialize();
   runApp(
       //provider.ChangeNotifierProvider(create: (_) => EventData(), child: ProviderScope(child: MyApp()))
       ProviderScope(child: MyApp(),),
@@ -45,7 +43,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void dispose() {
-    Hive.close();
+    //Hive.close();
     super.dispose();
   }
 }

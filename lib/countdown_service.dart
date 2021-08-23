@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final eventDateProvider = Provider<DateTime>((ref) => DateTime(2021, 08, 21));
 
-final countDownProvider = StateNotifierProvider.family<CountDown, DateTime>((ref, date) {
+final countDownProvider = StateNotifierProvider.family<CountDown, TimeRemaining, DateTime>((ref, date) {
   return CountDown(date);
 });
 

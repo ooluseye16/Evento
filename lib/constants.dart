@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-List<String> events = [
+List<String> eventType = [
   'Anniversary',
   'Announcement',
   'Birthday',
