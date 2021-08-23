@@ -1,16 +1,21 @@
 import 'dart:async';
 
 import 'package:evento/components/timeRemaining.dart';
+import 'package:evento/repository/events_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'entities/entities.dart';
 
 final eventDateProvider = Provider<DateTime>((ref) => DateTime(2021, 08, 21));
 
 final countDownProvider = StateNotifierProvider.family<CountDown, TimeRemaining, DateTime>((ref, date) {
-  return CountDown(date);
+  return CountDown(date, ref.read);
 });
 
 class CountDown extends StateNotifier<TimeRemaining> {
-  CountDown(this.eventDate): super(TimeRemaining()){
+
+  Reader _read;
+  CountDown(this.eventDate, [this._read]): super(TimeRemaining()){
     int dif =  eventDate.difference(DateTime.now()).inSeconds;
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       if (dif < 0) {

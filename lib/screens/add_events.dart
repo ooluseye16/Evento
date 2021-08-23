@@ -351,7 +351,7 @@ class _AddEventsState extends State<AddEvents> {
                           return ElevatedButton(
                             onPressed: () {
                               if (eventTitle != null && selectedDate != null) {
-                                watch(eventListProvider).addNewEvent(Event(
+                                watch(eventRepositoryProvider).addNewEvent(Event(
                                   title: eventTitle,
                                   date: selectedDate,
                                   note: eventNote,

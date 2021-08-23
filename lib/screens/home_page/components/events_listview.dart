@@ -1,16 +1,18 @@
 import 'package:evento/entities/entities.dart';
+import 'package:evento/repository/events_repository.dart';
 import 'package:evento/screens/fullScreen.dart';
 import 'package:evento/widgets/countdownCard.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class EventsListView extends StatelessWidget {
+class EventsListView extends ConsumerWidget {
    EventsListView({
     @required this.events,
     Key key,
   }) : super(key: key);
 final List<Event> events;
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ScopedReader watch) {
     return ListView.builder(
         itemCount: events.length,
         itemBuilder: (context, index) {
@@ -50,6 +52,7 @@ final List<Event> events;
                               ),
                             ),
                             onTap: () {
+                              context.read(eventRepositoryProvider).deleteCard(event);
                               // Provider.of<EventData>(context, listen: false)
                               //     .deleteCard(index);
                               Navigator.pop(context);
