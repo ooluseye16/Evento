@@ -41,6 +41,7 @@ dependencies:
   flutter_riverpod:
   objectbox: ^1.1.1
   objectbox_flutter_libs: any
+  flutter_screenutil: ^5.0.0+2
 
 
 dev_dependencies:

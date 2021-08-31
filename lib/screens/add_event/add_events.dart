@@ -5,7 +5,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import '../constants.dart';
+import '../../constants.dart';
+import 'components/header.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AddEvents extends StatefulWidget {
   @override
@@ -13,8 +15,8 @@ class AddEvents extends StatefulWidget {
 }
 
 class _AddEventsState extends State<AddEvents> {
-  String eventTitle;
-  String eventNote;
+  TextEditingController eventTitleController = TextEditingController();
+  TextEditingController eventNoteController = TextEditingController();
   File image;
   final ImagePicker _picker = ImagePicker();
 
@@ -44,7 +46,6 @@ class _AddEventsState extends State<AddEvents> {
   String selectedEvent;
   String selectedImageFrom;
   DateTime selectedDate;
-  final TextEditingController _controller = new TextEditingController();
 
   Future _selectDayAndTime(BuildContext context) async {
     DateTime _selectedDay = await showDatePicker(
@@ -138,96 +139,19 @@ class _AddEventsState extends State<AddEvents> {
       body: SafeArea(
         child: ListView(
           children: [
-            Container(
-              height: MediaQuery.of(context).size.height -
-                  MediaQuery.of(context).size.height / 1.4,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color(0xffFCA532),
-                    Color(0xffF4526A),
-                  ],
-                  stops: [
-                    0.02,
-                    1.0,
-                  ],
-                ),
-              ),
-              padding: EdgeInsets.fromLTRB(18.0, 25.0, 20.0, 50.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      IconButton(
-                          icon: Icon(Icons.arrow_back),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          }),
-                      Row(
-                        children: [
-                          Stack(
-                            children: [
-                              IconButton(
-                                  icon: Icon(Icons.calendar_today),
-                                  onPressed: () {}),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 2.0),
-                                child: IconButton(
-                                    icon: Icon(Icons.add, size: 15.0),
-                                    onPressed: () {}),
-                              ),
-                            ],
-                          ),
-                          IconButton(
-                              icon: Icon(Icons.more_vert_rounded),
-                              onPressed: () {}),
-                        ],
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 20.0),
-                    child: Text("New Event",
-                        style: TextStyle(
-                          fontSize: 28.0,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                        )),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 20.0),
-                    child: Text(
-                      "Add an upcoming event",
-                      style: TextStyle(
-                          color: Color(0xffFAFAFA),
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.w500),
-                    ),
-                  )
-                ],
-              ),
-            ),
+            Header(),
             Container(
                 height: MediaQuery.of(context).size.height / 1.4,
-                padding: EdgeInsets.all(10.0),
+                padding: EdgeInsets.all(10.0.w),
                 child: ListView(
                   shrinkWrap: true,
                   children: [
                     ListTile(
                       leading: Icon(Icons.edit),
                       title: TextField(
-                        //  controller: controller,
+                        controller: eventTitleController,
                         onChanged: (value) {
-                          setState(() {
-                            eventTitle = value;
-                          });
+                          context.read(eventTitleProvider).state = value;
                         },
                         decoration: InputDecoration(
                           hintText: "Title",
@@ -277,7 +201,7 @@ class _AddEventsState extends State<AddEvents> {
                       leading: Icon(Icons.note),
                       title: Text("Note"),
                       trailing: InkWell(
-                          child: eventNote == null
+                          child: eventNoteController.text.isEmpty
                               ? Text("ADD NOTE")
                               : Text("NOTE ADDED"),
                           onTap: () {
@@ -292,14 +216,14 @@ class _AddEventsState extends State<AddEvents> {
                                               fontWeight: FontWeight.bold,
                                             )),
                                         onTap: () {
-                                          _controller.clear();
+                                          eventNoteController.clear();
                                           Navigator.pop(context);
                                         },
                                       ),
                                       InkWell(
                                         child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 10.0),
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 10.0.w),
                                           child: Text(
                                             "Ok",
                                             style: TextStyle(
@@ -321,20 +245,20 @@ class _AddEventsState extends State<AddEvents> {
                                     contentPadding: EdgeInsets.all(10.0),
                                     content: Container(
                                       padding: EdgeInsets.all(5.0),
-                                      height: 200.0,
+                                      height: 200.0.h,
                                       // width: 100.0,
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(10),
                                         border: Border.all(color: Colors.grey),
                                       ),
                                       child: TextField(
-                                        controller: controller,
+                                        controller: eventNoteController,
                                         maxLines: null,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            eventNote = value;
-                                          });
-                                        },
+                                        // onChanged: (value) {
+                                        //   setState(() {
+                                        //     eventNote = value;
+                                        //   });
+                                        // },
                                         decoration: InputDecoration(
                                           hintText: "Note",
                                           border: InputBorder.none,
@@ -350,11 +274,13 @@ class _AddEventsState extends State<AddEvents> {
                         child: Consumer(builder: (context, watch, child) {
                           return ElevatedButton(
                             onPressed: () {
-                              if (eventTitle != null && selectedDate != null) {
-                                watch(eventRepositoryProvider).addNewEvent(Event(
-                                  title: eventTitle,
+                              if (eventTitleController.text != null &&
+                                  selectedDate != null) {
+                                watch(eventRepositoryProvider)
+                                    .addNewEvent(Event(
+                                  title: eventTitleController.text,
                                   date: selectedDate,
-                                  note: eventNote,
+                                  note: eventNoteController.text,
                                   imagePath: image.path,
                                 ));
                                 // eventData.addNewCard(Event(

@@ -1,6 +1,7 @@
 import 'package:evento/repository/events_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../constants.dart';
 import 'events_listview.dart';
@@ -17,7 +18,9 @@ class Body extends ConsumerWidget {
     return streamEvents.when(
         data: (events) {
           return events.isNotEmpty
-              ? EventsListView(events: events,)
+              ? EventsListView(
+                  events: events,
+                )
               : Container(
                   padding: EdgeInsets.symmetric(horizontal: 20.0),
                   child: Column(
@@ -27,7 +30,7 @@ class Body extends ConsumerWidget {
                         "You haven’t added any events yet",
                         style: TextStyle(
                           fontWeight: FontWeight.w500,
-                          fontSize: 24.0,
+                          fontSize: 24.sp,
                           foreground: Paint()..shader = linearGradient,
                         ),
                         textAlign: TextAlign.center,
@@ -38,7 +41,7 @@ class Body extends ConsumerWidget {
                           "Add an event you’re excited about.A birthday, a concert or a party ",
                           style: TextStyle(
                               fontWeight: FontWeight.w400,
-                              fontSize: 18.0,
+                              fontSize: 18.sp,
                               color: Color(0xff121212)),
                           textAlign: TextAlign.center,
                         ),

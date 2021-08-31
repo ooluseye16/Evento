@@ -4,7 +4,7 @@ import 'package:evento/screens/fullScreen.dart';
 import 'package:evento/widgets/countdownCard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class EventsListView extends ConsumerWidget {
    EventsListView({
     @required this.events,
@@ -18,7 +18,7 @@ final List<Event> events;
         itemBuilder: (context, index) {
           Event event = events[index];
           return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20.0),
+            padding: EdgeInsets.symmetric(vertical: 20.0.h),
             child: InkWell(
               onLongPress: () {
                 return showDialog<void>(
@@ -42,8 +42,8 @@ final List<Event> events;
                           ),
                           InkWell(
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10.0),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 10.0.w),
                               child: Text(
                                 "Yes",
                                 style: TextStyle(
@@ -67,6 +67,7 @@ final List<Event> events;
                     context,
                     MaterialPageRoute(
                         builder: (context) => FullScreen(
+                          event: event,
                             // eventName: countDownDetails.title,
                             // date: countDownDetails.date,
                             //  imagePath: countDownDetails.imagePath,
