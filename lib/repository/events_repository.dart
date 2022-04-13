@@ -1,7 +1,6 @@
 import 'package:evento/entities/entities.dart';
 import 'package:evento/objectbox.g.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:objectbox/objectbox.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 
@@ -11,7 +10,7 @@ final eventRepositoryProvider =
 
 final storeProvider = FutureProvider<Store>((ref) async {
   Store _store = await getApplicationDocumentsDirectory().then((dir) {
-    print(dir.path);
+    
     return Store(
       getObjectBoxModel(),
       directory: join(dir.path, "objectbox"),
@@ -24,7 +23,7 @@ final eventsProvider = StreamProvider<List<Event>>((ref) {
   final storeFuture = ref.watch(storeProvider);
   //final date = ref.watch(currentDateProvider);
   return storeFuture.when(data: (store) {
-    print("got data");
+   
     return store.box<Event>().query().watch(triggerImmediately: true).map(
           (query) => query.find()
             ..removeWhere(
@@ -34,17 +33,17 @@ final eventsProvider = StreamProvider<List<Event>>((ref) {
             ),
         );
   }, loading: () {
-    print("loading");
+  
     return Stream.value([]);
   }, error: (e, s) {
-    print(e);
+
     return Stream.error(e, s);
   });
 });
 
 class EventRepository {
   EventRepository([this._read]);
-  Reader _read;
+  final Reader _read;
 
   void addNewEvent(Event event) {
     _read(storeProvider).whenData((store) => store.box<Event>().put(event));

@@ -12,8 +12,8 @@ class Body extends ConsumerWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context, ScopedReader watch) {
-    final streamEvents = watch(eventsProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final streamEvents = ref.watch(eventsProvider);
 
     return streamEvents.when(
         data: (events) {
@@ -22,7 +22,7 @@ class Body extends ConsumerWidget {
                   events: events,
                 )
               : Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -42,7 +42,7 @@ class Body extends ConsumerWidget {
                           style: TextStyle(
                               fontWeight: FontWeight.w400,
                               fontSize: 18.sp,
-                              color: Color(0xff121212)),
+                              color: const Color(0xff121212)),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -50,9 +50,9 @@ class Body extends ConsumerWidget {
                   ),
                 );
         },
-        loading: () => Center(child: CircularProgressIndicator()),
+        loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) {
-          print(error);
+          //print(error);
           return Text(error);
         });
   }

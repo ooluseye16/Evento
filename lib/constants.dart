@@ -16,9 +16,9 @@ List<String> eventType = [
   'Others',
 ];
 
-final Shader linearGradient = LinearGradient(
+final Shader linearGradient = const LinearGradient(
   colors: <Color>[
     Color(0xffFEA831),
     Color(0xffEE197F),
   ],
-).createShader(Rect.fromLTWH(0.0, 0.0, 400.0, 50.0));
+).createShader(const Rect.fromLTWH(0.0, 0.0, 400.0, 50.0));

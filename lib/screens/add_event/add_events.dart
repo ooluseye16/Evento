@@ -1,20 +1,23 @@
 import 'dart:io';
+
 import 'package:evento/entities/entities.dart';
 import 'package:evento/repository/events_repository.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+
 import '../../constants.dart';
 import 'components/header.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class AddEvents extends StatefulWidget {
+class AddEvents extends ConsumerStatefulWidget {
+  const AddEvents({Key key}) : super(key: key);
+
   @override
   _AddEventsState createState() => _AddEventsState();
 }
 
-class _AddEventsState extends State<AddEvents> {
+class _AddEventsState extends ConsumerState<AddEvents> {
   TextEditingController eventTitleController = TextEditingController();
   TextEditingController eventNoteController = TextEditingController();
   File image;
@@ -27,7 +30,7 @@ class _AddEventsState extends State<AddEvents> {
       if (pickedFile != null) {
         image = File(pickedFile.path);
       } else {
-        print('No image selected.');
+        debugPrint('No image selected.');
       }
     });
   }
@@ -84,10 +87,10 @@ class _AddEventsState extends State<AddEvents> {
         dropdownItems.add(newItem);
       }
     } catch (e) {
-      print(e);
+     // print(e);
     }
     return DropdownButton<String>(
-      underline: SizedBox.shrink(),
+      underline: const SizedBox.shrink(),
       value: selected,
       items: dropdownItems,
       onChanged: (value) {
@@ -116,10 +119,10 @@ class _AddEventsState extends State<AddEvents> {
         imageDropdownItems.add(newItem);
       }
     } catch (e) {
-      print(e);
+     // print(e);
     }
     return DropdownButton(
-      underline: SizedBox.shrink(),
+      underline: const SizedBox.shrink(),
       value: selectedImageFrom,
       items: imageDropdownItems,
       onChanged: (value) {
@@ -139,7 +142,7 @@ class _AddEventsState extends State<AddEvents> {
       body: SafeArea(
         child: ListView(
           children: [
-            Header(),
+            const Header(),
             Container(
                 height: MediaQuery.of(context).size.height / 1.4,
                 padding: EdgeInsets.all(10.0.w),
@@ -147,63 +150,63 @@ class _AddEventsState extends State<AddEvents> {
                   shrinkWrap: true,
                   children: [
                     ListTile(
-                      leading: Icon(Icons.edit),
+                      leading: const Icon(Icons.edit),
                       title: TextField(
                         controller: eventTitleController,
                         onChanged: (value) {
-                          context.read(eventTitleProvider).state = value;
+                          ref.watch(eventTitleProvider.state).state = value;
                         },
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: "Title",
                           border: InputBorder.none,
                         ),
                       ),
                     ),
-                    CustomDivider(),
+                    const CustomDivider(),
                     ListTile(
-                      leading: Icon(Icons.celebration),
-                      title: Text("Event"),
+                      leading: const Icon(Icons.celebration),
+                      title: const Text("Event"),
                       trailing: dropdown(eventType, selectedEvent, []),
                     ),
-                    CustomDivider(),
+                    const CustomDivider(),
                     ListTile(
-                        leading: Icon(Icons.event),
-                        title: Text("Date"),
+                        leading: const Icon(Icons.event),
+                        title: const Text("Date"),
                         trailing: InkWell(
                           onTap: () {
                             _selectDayAndTime(context);
                           },
                           child: selectedDate != null
                               ? Text("${selectedDate.toLocal()}".split(' ')[0])
-                              : Text("SELECT DATE"),
+                              : const Text("SELECT DATE"),
                         )),
-                    CustomDivider(),
+                    const CustomDivider(),
                     ListTile(
-                      leading: Icon(Icons.repeat_rounded),
-                      title: Text("Repeat"),
+                      leading: const Icon(Icons.repeat_rounded),
+                      title: const Text("Repeat"),
                       trailing:
-                          InkWell(child: Text("ADD REPEAT"), onTap: () {}),
+                          InkWell(child: const Text("ADD REPEAT"), onTap: () {}),
                     ),
-                    CustomDivider(),
+                    const CustomDivider(),
                     ListTile(
-                      leading: Icon(Icons.add_a_photo),
-                      title: Text("Photo"),
+                      leading: const Icon(Icons.add_a_photo),
+                      title: const Text("Photo"),
                       trailing: imageSource(),
                     ),
-                    CustomDivider(),
+                    const CustomDivider(),
                     ListTile(
-                      leading: Icon(Icons.audiotrack_rounded),
-                      title: Text("Song"),
-                      trailing: InkWell(child: Text("ADD SONG"), onTap: () {}),
+                      leading: const Icon(Icons.audiotrack_rounded),
+                      title: const Text("Song"),
+                      trailing: InkWell(child: const Text("ADD SONG"), onTap: () {}),
                     ),
-                    CustomDivider(),
+                    const CustomDivider(),
                     ListTile(
-                      leading: Icon(Icons.note),
-                      title: Text("Note"),
+                      leading: const Icon(Icons.note),
+                      title: const Text("Note"),
                       trailing: InkWell(
                           child: eventNoteController.text.isEmpty
-                              ? Text("ADD NOTE")
-                              : Text("NOTE ADDED"),
+                              ? const Text("ADD NOTE")
+                              : const Text("NOTE ADDED"),
                           onTap: () {
                             return showDialog<void>(
                                 context: context,
@@ -211,7 +214,7 @@ class _AddEventsState extends State<AddEvents> {
                                   return AlertDialog(
                                     actions: [
                                       InkWell(
-                                        child: Text("Cancel",
+                                        child: const Text("Cancel",
                                             style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                             )),
@@ -224,7 +227,7 @@ class _AddEventsState extends State<AddEvents> {
                                         child: Padding(
                                           padding: EdgeInsets.symmetric(
                                               horizontal: 10.0.w),
-                                          child: Text(
+                                          child: const Text(
                                             "Ok",
                                             style: TextStyle(
                                               fontWeight: FontWeight.bold,
@@ -234,17 +237,17 @@ class _AddEventsState extends State<AddEvents> {
                                         onTap: () {
                                           Navigator.pop(context);
                                           ScaffoldMessenger.of(context)
-                                              .showSnackBar(SnackBar(
+                                              .showSnackBar(const SnackBar(
                                             behavior: SnackBarBehavior.floating,
                                             content: Text("Note added!"),
                                           ));
                                         },
                                       )
                                     ],
-                                    title: Text("Note"),
-                                    contentPadding: EdgeInsets.all(10.0),
+                                    title: const Text("Note"),
+                                    contentPadding: const EdgeInsets.all(10.0),
                                     content: Container(
-                                      padding: EdgeInsets.all(5.0),
+                                      padding: const EdgeInsets.all(5.0),
                                       height: 200.0.h,
                                       // width: 100.0,
                                       decoration: BoxDecoration(
@@ -259,7 +262,7 @@ class _AddEventsState extends State<AddEvents> {
                                         //     eventNote = value;
                                         //   });
                                         // },
-                                        decoration: InputDecoration(
+                                        decoration: const InputDecoration(
                                           hintText: "Note",
                                           border: InputBorder.none,
                                         ),
@@ -276,7 +279,7 @@ class _AddEventsState extends State<AddEvents> {
                             onPressed: () {
                               if (eventTitleController.text != null &&
                                   selectedDate != null) {
-                                watch(eventRepositoryProvider)
+                                ref.watch(eventRepositoryProvider)
                                     .addNewEvent(Event(
                                   title: eventTitleController.text,
                                   date: selectedDate,
@@ -292,12 +295,12 @@ class _AddEventsState extends State<AddEvents> {
                               }
                               Navigator.pop(context);
                             },
-                            child: Text(
+                            child: const Text(
                               "ADD EVENT",
                               style: TextStyle(color: Colors.white),
                             ),
                             style: ElevatedButton.styleFrom(
-                              primary: Color(0xffFCA532),
+                              primary: const Color(0xffFCA532),
                             ),
                           );
                         }))
@@ -320,8 +323,8 @@ class CustomDivider extends StatelessWidget {
     return Center(
       child: Container(
         height: 1.0,
-        margin: EdgeInsetsDirectional.only(start: 0.0, end: 0.0),
-        decoration: BoxDecoration(
+        margin: const EdgeInsetsDirectional.only(start: 0.0, end: 0.0),
+        decoration: const BoxDecoration(
           border: Border(
             bottom: BorderSide(color: Colors.grey, width: 1.0),
           ),

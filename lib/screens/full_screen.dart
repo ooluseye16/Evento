@@ -1,31 +1,12 @@
-import 'dart:async';
-import 'dart:ui';
 import 'package:evento/entities/entities.dart';
 import 'package:evento/widgets/event_countdown.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:just_audio/just_audio.dart';
 
 class FullScreen extends StatelessWidget {
- final Event event;
+  final Event event;
 
-  FullScreen(
-      {this.event});
-
-  final AudioPlayer player = AudioPlayer();
-  Future<void> setUpPlayer() async {
-    await player.setAsset('assets/audio/scatter.mp3');
-    player
-        .play()
-        .timeout(Duration(seconds: 60), onTimeout: () => player.stop());
-  }
-
-  playSong() {
-    print("Worked");
-    setUpPlayer();
-  }
-
+  FullScreen({Key key, this.event}) : super(key: key);
   final todayDate = DateTime.now();
 
   String monthInWords() {
@@ -42,7 +23,7 @@ class FullScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -52,28 +33,29 @@ class FullScreen extends StatelessWidget {
             ],
           ),
         ),
-        padding: EdgeInsets.fromLTRB(24.0, 50.0, 24.0, 24.0),
+        padding: const EdgeInsets.fromLTRB(24.0, 50.0, 24.0, 24.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 InkWell(
-                  child: Icon(
+                  child: const Icon(
                     Icons.arrow_back_ios,
                   ),
                   onTap: () {
                     Navigator.pop(context);
                   },
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20.0,
                 ),
                 Text(
                   event.title,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 28.0,
                     fontWeight: FontWeight.w700,
@@ -81,17 +63,19 @@ class FullScreen extends StatelessWidget {
                 ),
                 Text(
                   '${dayInWords()} ${event.date.day} ${monthInWords()} ${event.date.year}',
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20.0,
                 ),
-                EventCountDown(),
-                SizedBox(
+                EventCountDown(
+                  eventDate: event.date,
+                ),
+                const SizedBox(
                   height: 20.0,
                 ),
                 Row(
@@ -102,18 +86,18 @@ class FullScreen extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         primary: Colors.white,
                         elevation: 1.0,
-                        padding: EdgeInsets.symmetric(
+                        padding: const EdgeInsets.symmetric(
                             horizontal: 16.0, vertical: 8.0),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8.0)),
                       ),
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.share,
                         color: Color(0xffFCA532),
                         size: 20.0,
                       ),
-                      label: Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
+                      label: const Padding(
+                        padding: EdgeInsets.only(left: 8.0),
                         child: Text(
                           'Share',
                           style: TextStyle(
@@ -124,24 +108,24 @@ class FullScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 10.0,
                     ),
                     OutlinedButton(
                       style: OutlinedButton.styleFrom(
                         primary: Colors.white,
-                        padding: EdgeInsets.symmetric(
+                        padding: const EdgeInsets.symmetric(
                             horizontal: 16.0, vertical: 8.0),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0),
                         ),
-                        side: BorderSide(
+                        side: const BorderSide(
                           width: 2.0,
                           color: Colors.white,
                         ),
                       ),
                       onPressed: () {},
-                      child: Text(
+                      child: const Text(
                         "Edit",
                         style: TextStyle(
                           color: Colors.white,
@@ -154,15 +138,14 @@ class FullScreen extends StatelessWidget {
                 ),
               ],
             ),
-            Container(
-              height: MediaQuery.of(context).size.height / 2,
-              child: event.note != null
-                  ? Column(
+            event.note != null
+                ? Expanded(
+                    child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 20.0),
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 20.0),
                           child: Text(
                             "Note",
                             style: TextStyle(
@@ -173,15 +156,15 @@ class FullScreen extends StatelessWidget {
                         ),
                         Text(
                           event.note,
-                          style: TextStyle(
+                          style: const TextStyle(
                               color: Colors.white,
                               fontSize: 18.0,
                               fontWeight: FontWeight.w600),
                         ),
                       ],
-                    )
-                  : SizedBox.shrink(),
-            )
+                    ),
+                  )
+                : const SizedBox.shrink()
           ],
         ),
       ),

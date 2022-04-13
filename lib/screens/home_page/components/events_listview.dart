@@ -1,18 +1,18 @@
 import 'package:evento/entities/entities.dart';
 import 'package:evento/repository/events_repository.dart';
-import 'package:evento/screens/fullScreen.dart';
-import 'package:evento/widgets/countdownCard.dart';
+import 'package:evento/screens/full_screen.dart';
+import 'package:evento/widgets/countdown_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 class EventsListView extends ConsumerWidget {
-   EventsListView({
+   const EventsListView({
     @required this.events,
     Key key,
   }) : super(key: key);
 final List<Event> events;
   @override
-  Widget build(BuildContext context, ScopedReader watch) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return ListView.builder(
         itemCount: events.length,
         itemBuilder: (context, index) {
@@ -25,14 +25,12 @@ final List<Event> events;
                     context: context,
                     builder: (context) {
                       return AlertDialog(
-                        title: Text("Delete?"),
-                        content: Container(
-                          child: Text(
-                              "Do you want to delete this event?"),
-                        ),
+                        title: const Text("Delete?"),
+                        content: const Text(
+                            "Do you want to delete this event?"),
                         actions: [
                           InkWell(
-                            child: Text("No",
+                            child: const Text("No",
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                 )),
@@ -44,7 +42,7 @@ final List<Event> events;
                             child: Padding(
                               padding: EdgeInsets.symmetric(
                                   horizontal: 10.0.w),
-                              child: Text(
+                              child: const Text(
                                 "Yes",
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
@@ -52,7 +50,7 @@ final List<Event> events;
                               ),
                             ),
                             onTap: () {
-                              context.read(eventRepositoryProvider).deleteCard(event);
+                              ref.read(eventRepositoryProvider).deleteCard(event);
                               // Provider.of<EventData>(context, listen: false)
                               //     .deleteCard(index);
                               Navigator.pop(context);

@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:ui';
 import 'package:evento/entities/entities.dart';
 import 'package:evento/widgets/event_card_content.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,8 +6,8 @@ import 'package:flutter/material.dart';
 
 
 class CountDownCard extends StatelessWidget {
-  CountDownCard(
-      {this.event});
+  const CountDownCard(
+      {Key key, this.event}) : super(key: key);
   final Event event;
 
   @override
@@ -30,7 +29,7 @@ class CountDownCard extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          BackgroundGradient(),
+          const BackgroundGradient(),
          EventCardContent(event: event,)
         ],
       ),
@@ -52,8 +51,8 @@ class BackgroundGradient extends StatelessWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Color(0xffFCA532).withOpacity(0.4),
-              Color(0xffF4526A).withOpacity(0.4),
+              const Color(0xffFCA532).withOpacity(0.4),
+              const Color(0xffF4526A).withOpacity(0.4),
             ],
           ),
         ),

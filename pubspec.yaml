@@ -50,6 +50,7 @@ dev_dependencies:
   # hive_generator:
   build_runner: ^2.1.1
   objectbox_generator: ^1.1.1
+  flutter_lints:
   
 
 # For information on the generic Dart part of this file, see the

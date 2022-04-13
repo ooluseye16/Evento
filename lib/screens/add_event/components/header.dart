@@ -9,12 +9,12 @@ class Header extends ConsumerWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context, ScopedReader watch) {
-    String eventTitle = watch(eventTitleProvider).state;
+  Widget build(BuildContext context, WidgetRef ref) {
+    String eventTitle = ref.watch(eventTitleProvider.state).state;
     return Container(
       height: MediaQuery.of(context).size.height -
           MediaQuery.of(context).size.height / 1.4,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
@@ -28,7 +28,7 @@ class Header extends ConsumerWidget {
           ],
         ),
       ),
-      padding: EdgeInsets.fromLTRB(18.0, 25.0, 20.0, 50.0),
+      padding: const EdgeInsets.fromLTRB(18.0, 25.0, 20.0, 50.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -36,7 +36,7 @@ class Header extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
-                  icon: Icon(Icons.arrow_back),
+                  icon: const Icon(Icons.arrow_back),
                   onPressed: () {
                     Navigator.pop(context);
                   }),
@@ -45,21 +45,23 @@ class Header extends ConsumerWidget {
                   Stack(
                     children: [
                       IconButton(
-                          icon: Icon(Icons.calendar_today), onPressed: () {}),
+                          icon: const Icon(Icons.calendar_today),
+                          onPressed: () {}),
                       Padding(
                         padding: const EdgeInsets.only(top: 2.0),
                         child: IconButton(
-                            icon: Icon(Icons.add, size: 15.0),
+                            icon: const Icon(Icons.add, size: 15.0),
                             onPressed: () {}),
                       ),
                     ],
                   ),
-                  InkWell(child: Icon(Icons.more_vert_rounded), onTap: () {}),
+                  InkWell(
+                      child: const Icon(Icons.more_vert_rounded), onTap: () {}),
                 ],
               ),
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 20.0,
           ),
           Padding(
@@ -68,14 +70,14 @@ class Header extends ConsumerWidget {
                 eventTitle == null || eventTitle.isEmpty
                     ? "New Event"
                     : eventTitle,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 28.0,
                   fontWeight: FontWeight.w700,
                   color: Colors.white,
                 )),
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20.0),
+          const Padding(
+            padding: EdgeInsets.only(left: 20.0),
             child: Text(
               "Add an upcoming event",
               style: TextStyle(

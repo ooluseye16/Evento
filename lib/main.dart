@@ -1,7 +1,7 @@
 //import 'package:android_alarm_manager/android_alarm_manager.dart';
 //import 'package:evento/model/eventData.dart';
 // import 'package:evento/ui/countdownSystem.dart';
-import 'package:evento/screens/splashScreen.dart';
+import 'package:evento/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -19,11 +19,13 @@ void main() async {
   // await AndroidAlarmManager.initialize();
   runApp(
       //provider.ChangeNotifierProvider(create: (_) => EventData(), child: ProviderScope(child: MyApp()))
-      ProviderScope(child: MyApp(),),
+      const ProviderScope(child: MyApp(),),
   );
 }
 
 class MyApp extends StatefulWidget {
+  const MyApp({Key key}) : super(key: key);
+
   @override
   _MyAppState createState() => _MyAppState();
 }
@@ -32,25 +34,19 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-     designSize: Size(375, 812),
-      builder: () {
+     designSize: const Size(375, 812),
+      builder: (context) {
         return MaterialApp(
-          color: Color(0xffFCA532),
+          color: const Color(0xffFCA532),
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
-              accentColor: Colors.white,
-              iconTheme: IconThemeData(color: Colors.white)),
+             
+              iconTheme: const IconThemeData(color: Colors.white)),
           title: "Evento",
-          home: CustomSplashScreen(),
+          home: const CustomSplashScreen(),
         );
       }
     );
-  }
-
-  @override
-  void dispose() {
-    //Hive.close();
-    super.dispose();
   }
 }
 

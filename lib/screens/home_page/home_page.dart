@@ -9,12 +9,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class HomePage extends StatelessWidget {
   final DateTime dateNow = DateTime.now();
 
+   HomePage({Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     String abbrMonth = DateFormat.MMM().format(dateNow);
     String getSystemTime() {
-      var now = new DateTime.now();
-      return new DateFormat("hh : mm : ss").format(now);
+      var now = DateTime.now();
+      return DateFormat("hh : mm : ss").format(now);
     }
 
     return Scaffold(
@@ -23,13 +25,13 @@ class HomePage extends StatelessWidget {
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AddEvents(),
+                builder: (context) => const AddEvents(),
               ));
         },
         child: Container(
           height: 55.0.w,
           width: 55.0.w,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
               shape: BoxShape.circle,
               gradient: LinearGradient(
                   begin: Alignment.topLeft,
@@ -65,14 +67,14 @@ class HomePage extends StatelessWidget {
                   ),
                   IconButton(
                     color: Colors.black,
-                    icon: Icon(Icons.settings),
+                    icon: const Icon(Icons.settings),
                     onPressed: () {},
                   )
                 ],
               ),
-              TimerBuilder.periodic(Duration(seconds: 1), builder: (context) {
+              TimerBuilder.periodic(const Duration(seconds: 1), builder: (context) {
                 return Text(
-                  "${getSystemTime()}",
+                  getSystemTime(),
                   style: TextStyle(
                     fontSize: 30.sp,
                     fontWeight: FontWeight.w500,
@@ -81,7 +83,7 @@ class HomePage extends StatelessWidget {
                   ),
                 );
               }),
-              Expanded(
+              const Expanded(
                 flex: 1,
                 child: Body(),
               ),
