@@ -7,17 +7,12 @@ class FullScreen extends StatelessWidget {
   final Event event;
 
   FullScreen({Key key, this.event}) : super(key: key);
+  
   final todayDate = DateTime.now();
 
-  String monthInWords() {
-    String month = DateFormat.MMMM().format(event.date);
-    return month;
-  }
+  String get monthInWords => DateFormat.MMMM().format(event.date);
 
-  String dayInWords() {
-    String day = DateFormat.EEEE().format(event.date);
-    return day;
-  }
+  String get dayInWords => DateFormat.EEEE().format(event.date);
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +57,7 @@ class FullScreen extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '${dayInWords()} ${event.date.day} ${monthInWords()} ${event.date.year}',
+                  '$dayInWords ${event.date.day} $monthInWords ${event.date.year}',
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,

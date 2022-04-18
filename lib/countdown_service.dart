@@ -1,25 +1,24 @@
 import 'dart:async';
 
-import 'package:evento/components/time_remaining.dart';
+import 'package:evento/entities/time_remaining.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
-final eventDateProvider = Provider<DateTime>((ref) => DateTime(2021, 08, 21));
-
-final countDownProvider = StateNotifierProvider.family<CountDown, TimeRemaining, DateTime>((ref, date) {
-  return CountDown(date,);
-});
+final countDownProvider =
+    StateNotifierProvider.family<CountDown, TimeRemaining, DateTime>(
+  (ref, date) {
+    return CountDown(
+      date,
+    );
+  },
+);
 
 class CountDown extends StateNotifier<TimeRemaining> {
-
-  CountDown(this.eventDate): super(TimeRemaining()){
-    int dif =  eventDate.difference(DateTime.now()).inSeconds;
+  CountDown(this.eventDate) : super(TimeRemaining()) {
+    int dif = eventDate.difference(DateTime.now()).inSeconds;
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (dif < 0) {
-        // Provider.of<EventData>(context, listen: false)
-        //     .deleteCard(widget.id);
-        // AndroidAlarmManager.oneShotAt(widget.date, 1, playSong(),
-        //     wakeup: true);
+        debugPrint("event done");
         timer.cancel();
       } else if (dif < 60) {
         state = TimeRemaining(
@@ -68,12 +67,12 @@ class CountDown extends StateNotifier<TimeRemaining> {
       }
     });
   }
- Timer _timer;
-DateTime eventDate;
+  Timer _timer;
+  DateTime eventDate;
 
-@override
+  @override
   void dispose() {
-   _timer.cancel();
+    _timer.cancel();
     super.dispose();
   }
 }

@@ -12,10 +12,6 @@ class CountDownCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final List<Color> colors = [
-    //   Color(0xffFCA532),
-    //   Color(0xffF4526A),
-    // ];
     return Container(
       height: 300,
       width: double.infinity,
