@@ -29,7 +29,7 @@ class _CustomSplashScreenState extends State<CustomSplashScreen>
         () => Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => HomePage(),
+              builder: (context) => const HomePage(),
             )));
   }
 

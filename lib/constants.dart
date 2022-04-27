@@ -22,3 +22,10 @@ final Shader linearGradient = const LinearGradient(
     Color(0xffEE197F),
   ],
 ).createShader(const Rect.fromLTWH(0.0, 0.0, 400.0, 50.0));
+
+const outlineBorder = OutlineInputBorder(
+  borderSide: BorderSide.none,
+  borderRadius: BorderRadius.all(
+    Radius.circular(10.0),
+  ),
+);

@@ -42,6 +42,9 @@ dependencies:
   objectbox: ^1.1.1
   objectbox_flutter_libs: any
   flutter_screenutil: ^5.0.0+2
+  google_fonts: ^2.3.1
+  dotted_decoration: ^2.0.0
+  
 
 
 dev_dependencies:

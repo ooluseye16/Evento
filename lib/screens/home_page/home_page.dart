@@ -1,32 +1,32 @@
+import 'package:evento/screens/add_event/add_events.dart';
 import 'package:evento/screens/home_page/components/body.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:timer_builder/timer_builder.dart';
+
 import '../../constants.dart';
-import '../add_event/add_events.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class HomePage extends StatelessWidget {
-  final DateTime dateNow = DateTime.now();
-
-   HomePage({Key key}) : super(key: key);
+  const HomePage({Key key}) : super(key: key);
+  DateTime get todaysDate => DateTime.now();
+  String get getSystemTime => DateFormat("hh : mm : ss").format(todaysDate);
 
   @override
   Widget build(BuildContext context) {
-    String abbrMonth = DateFormat.MMM().format(dateNow);
-    String getSystemTime() {
-      var now = DateTime.now();
-      return DateFormat("hh : mm : ss").format(now);
-    }
+    String abbrMonth = DateFormat.MMM().format(DateTime.now());
 
     return Scaffold(
       floatingActionButton: InkWell(
         onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const AddEvents(),
-              ));
+          // Navigator.push(context, MaterialPageRoute(builder: (context) => const AddEvents()));
+          showModalBottomSheet(
+              isScrollControlled: true,
+              shape: const RoundedRectangleBorder(
+                  borderRadius:
+                      BorderRadius.vertical(top: Radius.circular(20))),
+              context: context,
+              builder: (context) => const AddEvent());
         },
         child: Container(
           height: 55.0.w,
@@ -59,7 +59,7 @@ class HomePage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Today: $abbrMonth ${dateNow.day}, ${dateNow.year}",
+                    "Today: $abbrMonth ${todaysDate.day}, ${todaysDate.year}",
                     style: TextStyle(
                       fontSize: 18.sp,
                       fontWeight: FontWeight.w500,
@@ -72,9 +72,10 @@ class HomePage extends StatelessWidget {
                   )
                 ],
               ),
-              TimerBuilder.periodic(const Duration(seconds: 1), builder: (context) {
+              TimerBuilder.periodic(const Duration(seconds: 1),
+                  builder: (context) {
                 return Text(
-                  getSystemTime(),
+                  getSystemTime,
                   style: TextStyle(
                     fontSize: 30.sp,
                     fontWeight: FontWeight.w500,

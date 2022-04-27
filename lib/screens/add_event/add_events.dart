@@ -1,53 +1,21 @@
-import 'dart:io';
+//
 
-import 'package:evento/entities/entities.dart';
-import 'package:evento/repository/events_repository.dart';
+import 'package:dotted_decoration/dotted_decoration.dart';
+import 'package:evento/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
-import '../../constants.dart';
-import 'components/header.dart';
-
-class AddEvents extends ConsumerStatefulWidget {
-  const AddEvents({Key key}) : super(key: key);
+class AddEvent extends StatefulWidget {
+  const AddEvent({
+    Key key,
+  }) : super(key: key);
 
   @override
-  _AddEventsState createState() => _AddEventsState();
+  State<AddEvent> createState() => _AddEventState();
 }
 
-class _AddEventsState extends ConsumerState<AddEvents> {
-  TextEditingController eventTitleController = TextEditingController();
-  TextEditingController eventNoteController = TextEditingController();
-  File image;
-  final ImagePicker _picker = ImagePicker();
-
-  Future getImage(ImageSource source) async {
-    final pickedFile = await _picker.pickImage(source: source);
-
-    setState(() {
-      if (pickedFile != null) {
-        image = File(pickedFile.path);
-      } else {
-        debugPrint('No image selected.');
-      }
-    });
-  }
-
-  List<Map<String, dynamic>> imageFrom = [
-    {
-      "title": "Camera",
-      "source": ImageSource.camera,
-    },
-    {
-      "title": "From Gallery",
-      "source": ImageSource.gallery,
-    }
-  ];
-
-  String selectedEvent;
-  String selectedImageFrom;
+class _AddEventState extends State<AddEvent> {
   DateTime selectedDate;
 
   Future _selectDayAndTime(BuildContext context) async {
@@ -76,259 +44,191 @@ class _AddEventsState extends ConsumerState<AddEvents> {
     }
   }
 
-  DropdownButton dropdown(List<String> listedItem, String selected,
-      List<DropdownMenuItem<String>> dropdownItems) {
-    try {
-      for (String item in listedItem) {
-        var newItem = DropdownMenuItem(
-          child: Text(item),
-          value: item,
-        );
-        dropdownItems.add(newItem);
-      }
-    } catch (e) {
-     // print(e);
-    }
-    return DropdownButton<String>(
-      underline: const SizedBox.shrink(),
-      value: selected,
-      items: dropdownItems,
-      onChanged: (value) {
-        setState(() {
-          if (selected == selectedEvent) {
-            selectedEvent = value;
-          } else {
-            selectedImageFrom = value;
-          }
-        });
-      },
-    );
-  }
-
-  DropdownButton imageSource() {
-    List<DropdownMenuItem> imageDropdownItems = [];
-    try {
-      for (var item in imageFrom) {
-        var newItem = DropdownMenuItem(
-          child: Text(item["title"]),
-          value: item,
-          onTap: () {
-            getImage(item["source"]);
-          },
-        );
-        imageDropdownItems.add(newItem);
-      }
-    } catch (e) {
-     // print(e);
-    }
-    return DropdownButton(
-      underline: const SizedBox.shrink(),
-      value: selectedImageFrom,
-      items: imageDropdownItems,
-      onChanged: (value) {
-        setState(() {
-          selectedImageFrom = value;
-        });
-      },
-    );
-  }
-
-  TextEditingController controller = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
-    //var eventData = Provider.of<EventData>(context);
-    return Scaffold(
-      body: SafeArea(
-        child: ListView(
-          children: [
-            const Header(),
-            Container(
-                height: MediaQuery.of(context).size.height / 1.4,
-                padding: EdgeInsets.all(10.0.w),
-                child: ListView(
-                  shrinkWrap: true,
+    return Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Center(
+            child: Text(
+              "Add Event",
+              style: TextStyle(
+                fontSize: 20.sp,
+                fontWeight: FontWeight.w500,
+                foreground: Paint()..shader = linearGradient,
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 10.0.h,
+          ),
+          const TitleText(
+            text: "Title of Event",
+          ),
+          SizedBox(
+            height: 5.0.h,
+          ),
+          TextField(
+            decoration: InputDecoration(
+              hintText: "Title of Event",
+              hintStyle: TextStyle(fontSize: 14.sp, color: Colors.black38),
+              filled: true,
+              isDense: true,
+              fillColor: Colors.grey[200],
+              border: InputBorder.none,
+              enabledBorder: outlineBorder,
+              focusedBorder: outlineBorder,
+            ),
+          ),
+          SizedBox(
+            height: 10.0.h,
+          ),
+          const TitleText(
+            text: "Date of Event",
+          ),
+          SizedBox(
+            height: 5.0.h,
+          ),
+          DecoratedBox(
+            decoration: BoxDecoration(
+              color: Colors.grey[200],
+              borderRadius: const BorderRadius.all(
+                Radius.circular(10.0),
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: InkWell(
+                onTap: () {
+                  _selectDayAndTime(context);
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    ListTile(
-                      leading: const Icon(Icons.edit),
-                      title: TextField(
-                        controller: eventTitleController,
-                        onChanged: (value) {
-                          ref.watch(eventTitleProvider.state).state = value;
-                        },
-                        decoration: const InputDecoration(
-                          hintText: "Title",
-                          border: InputBorder.none,
-                        ),
-                      ),
+                    Text(
+                      selectedDate == null
+                          ? "Select Date of Event"
+                          : DateFormat("dd-MM-yyyy").format(selectedDate),
+                      style: TextStyle(fontSize: 14.sp, color: Colors.black38),
                     ),
-                    const CustomDivider(),
-                    ListTile(
-                      leading: const Icon(Icons.celebration),
-                      title: const Text("Event"),
-                      trailing: dropdown(eventType, selectedEvent, []),
+                    const Icon(
+                      Icons.arrow_drop_down,
+                      color: Colors.black,
                     ),
-                    const CustomDivider(),
-                    ListTile(
-                        leading: const Icon(Icons.event),
-                        title: const Text("Date"),
-                        trailing: InkWell(
-                          onTap: () {
-                            _selectDayAndTime(context);
-                          },
-                          child: selectedDate != null
-                              ? Text("${selectedDate.toLocal()}".split(' ')[0])
-                              : const Text("SELECT DATE"),
-                        )),
-                    const CustomDivider(),
-                    ListTile(
-                      leading: const Icon(Icons.repeat_rounded),
-                      title: const Text("Repeat"),
-                      trailing:
-                          InkWell(child: const Text("ADD REPEAT"), onTap: () {}),
-                    ),
-                    const CustomDivider(),
-                    ListTile(
-                      leading: const Icon(Icons.add_a_photo),
-                      title: const Text("Photo"),
-                      trailing: imageSource(),
-                    ),
-                    const CustomDivider(),
-                    ListTile(
-                      leading: const Icon(Icons.audiotrack_rounded),
-                      title: const Text("Song"),
-                      trailing: InkWell(child: const Text("ADD SONG"), onTap: () {}),
-                    ),
-                    const CustomDivider(),
-                    ListTile(
-                      leading: const Icon(Icons.note),
-                      title: const Text("Note"),
-                      trailing: InkWell(
-                          child: eventNoteController.text.isEmpty
-                              ? const Text("ADD NOTE")
-                              : const Text("NOTE ADDED"),
-                          onTap: () {
-                            return showDialog<void>(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    actions: [
-                                      InkWell(
-                                        child: const Text("Cancel",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            )),
-                                        onTap: () {
-                                          eventNoteController.clear();
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                      InkWell(
-                                        child: Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 10.0.w),
-                                          child: const Text(
-                                            "Ok",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                        onTap: () {
-                                          Navigator.pop(context);
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(const SnackBar(
-                                            behavior: SnackBarBehavior.floating,
-                                            content: Text("Note added!"),
-                                          ));
-                                        },
-                                      )
-                                    ],
-                                    title: const Text("Note"),
-                                    contentPadding: const EdgeInsets.all(10.0),
-                                    content: Container(
-                                      padding: const EdgeInsets.all(5.0),
-                                      height: 200.0.h,
-                                      // width: 100.0,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        border: Border.all(color: Colors.grey),
-                                      ),
-                                      child: TextField(
-                                        controller: eventNoteController,
-                                        maxLines: null,
-                                        // onChanged: (value) {
-                                        //   setState(() {
-                                        //     eventNote = value;
-                                        //   });
-                                        // },
-                                        decoration: const InputDecoration(
-                                          hintText: "Note",
-                                          border: InputBorder.none,
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                });
-                          }),
-                    ),
-                    Align(
-                        alignment: Alignment.centerRight,
-                        child: Consumer(builder: (context, watch, child) {
-                          return ElevatedButton(
-                            onPressed: () {
-                              if (eventTitleController.text != null &&
-                                  selectedDate != null) {
-                                ref.watch(eventRepositoryProvider)
-                                    .addNewEvent(Event(
-                                  title: eventTitleController.text,
-                                  date: selectedDate,
-                                  note: eventNoteController.text,
-                                  imagePath: image.path,
-                                ));
-                                // eventData.addNewCard(Event(
-                                //   title: eventTitle,
-                                //   date: selectedDate,
-                                //   note: eventNote,
-                                //   imagePath: image.path,
-                                // ));
-                              }
-                              Navigator.pop(context);
-                            },
-                            child: const Text(
-                              "ADD EVENT",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              primary: const Color(0xffFCA532),
-                            ),
-                          );
-                        }))
                   ],
-                ))
-          ],
-        ),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 10.0.h,
+          ),
+          const TitleText(text: "Background Image"),
+          SizedBox(
+            height: 5.0.h,
+          ),
+          InkWell(
+            onTap: () {},
+            child: Container(
+              height: 150.0.h,
+              decoration: DottedDecoration(
+                shape: Shape.box,
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(10)),
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.image_outlined,
+                        color: Colors.grey[400],
+                        size: 30,
+                      ),
+                      Text(
+                        "Tap to select Image",
+                        style:
+                            TextStyle(fontSize: 14.sp, color: Colors.black38),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: 10.h),
+          const TitleText(text: "Description"),
+          SizedBox(
+            height: 5.h,
+          ),
+          Container(
+            height: 150.0.h,
+            padding: EdgeInsets.all(5.0.w),
+            decoration: DottedDecoration(
+              shape: Shape.box,
+              // border: Border.all(color: Colors.black45),
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            child: TextField(
+              maxLines: null,
+              decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintStyle: TextStyle(fontSize: 14.sp, color: Colors.black38),
+                  hintText: "Write a short note on the event"),
+            ),
+          ),
+          SizedBox(
+            height: 20.h,
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 15.h),
+            decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  //stops: [0.7, 1.0],
+                  colors: <Color>[
+                    Color(0xffFEA831),
+                    Color(0xffEE197F),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(10.0)),
+            child: Center(
+              child: Text(
+                "Add Event",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600),
+              ),
+            ),
+          )
+        ],
       ),
     );
   }
 }
 
-class CustomDivider extends StatelessWidget {
-  const CustomDivider({
+class TitleText extends StatelessWidget {
+  const TitleText({
     Key key,
+    @required this.text,
   }) : super(key: key);
 
+  final String text;
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        height: 1.0,
-        margin: const EdgeInsetsDirectional.only(start: 0.0, end: 0.0),
-        decoration: const BoxDecoration(
-          border: Border(
-            bottom: BorderSide(color: Colors.grey, width: 1.0),
-          ),
-        ),
+    return Text(
+      text,
+      style: TextStyle(
+        fontSize: 14.sp,
+        fontWeight: FontWeight.w500,
       ),
     );
   }
